@@ -4,7 +4,7 @@ from parameterized import parameterized
 from opencypher.ast import (
     Expression,
     Limit,
-    NonEmptyList,
+    NonEmptySequence,
     Order,
     Return,
     ReturnBody,
@@ -59,14 +59,14 @@ from opencypher.ast import (
 def test_return(distinct, items, order, skip, limit, query):
     ast = Return(
         ReturnBody(
-            items=NonEmptyList[ReturnItem](
+            items=NonEmptySequence[ReturnItem](
                 Expression(items[0]),
                 *(
                     Expression(value)
                     for value in items[1:]
                 ),
             ),
-            order=Order(items=NonEmptyList[SortItem](SortItem(Expression(order)))) if order else None,
+            order=Order(items=NonEmptySequence[SortItem](SortItem(Expression(order)))) if order else None,
             skip=Skip(Expression(skip)) if skip is not None else None,
             limit=Limit(Expression(limit)) if limit is not None else None,
         ),

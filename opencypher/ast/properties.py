@@ -1,11 +1,11 @@
-from typing import Iterable, List, Tuple, Union
+from typing import Iterable, Tuple, Union
 
 from opencypher.ast.expression import Expression, Parameter
 from opencypher.ast.formatting import str_join
 from opencypher.ast.naming import PropertyKeyName
 
 
-class MapLiteral(List[Tuple[PropertyKeyName, Expression]]):
+class MapLiteral(Tuple[Tuple[PropertyKeyName, Expression]]):
     """
     MapLiteral = '{', [SP], [PropertyKeyName, [SP], ':', [SP], Expression, [SP], { ',', [SP], PropertyKeyName, [SP], ':', [SP], Expression, [SP] }], '}' ;  # noqa: E501
 

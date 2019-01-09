@@ -1,7 +1,7 @@
 from typing import Optional
 
 from opencypher.ast import (
-    NonEmptyList,
+    NonEmptySequence,
     Limit,
     Order,
     Skip,
@@ -19,7 +19,7 @@ class ReturnFactory:
     @classmethod
     def order(cls, item: str, *items: str, order: Optional[SortOrder] = None) -> Order:
         return Order(
-            items=NonEmptyList[SortItem](
+            items=NonEmptySequence[SortItem](
                 SortItem(
                     expression=expr(item),
                     order=order,
@@ -51,7 +51,7 @@ class ReturnFactory:
             limit: Optional[int] = None) -> Return:
         return Return(
             body=ReturnBody(
-                items=NonEmptyList[ReturnItem](
+                items=NonEmptySequence[ReturnItem](
                     item,
                     *(
                         arg

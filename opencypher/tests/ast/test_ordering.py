@@ -1,11 +1,11 @@
 from hamcrest import assert_that, equal_to, is_
 
-from opencypher.ast import Expression, NonEmptyList, Order, SortItem, SortOrder
+from opencypher.ast import Expression, NonEmptySequence, Order, SortItem, SortOrder
 
 
 def test_order():
     ast = Order(
-        items=NonEmptyList[SortItem](
+        items=NonEmptySequence[SortItem](
             SortItem(
                 expression=Expression("foo"),
                 order=SortOrder.DESCENDING,

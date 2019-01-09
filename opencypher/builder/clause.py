@@ -4,7 +4,7 @@ from opencypher.ast import (
     Expression,
     Match,
     Merge,
-    NonEmptyList,
+    NonEmptySequence,
     Parameter,
     Pattern,
     PatternElement,
@@ -22,7 +22,7 @@ class ClauseFactory:
     def create(cls, pattern_element: PatternElement) -> Create:
         return Create(
             pattern=Pattern(
-                items=NonEmptyList[PatternPart](
+                items=NonEmptySequence[PatternPart](
                     PatternPart(pattern_element),
                 ),
             ),
@@ -34,7 +34,7 @@ class ClauseFactory:
                *expressions: str,
                detach: bool = False) -> Delete:
         return Delete(
-            items=NonEmptyList[Expression](
+            items=NonEmptySequence[Expression](
                 expr(expression),
                 *(
                     expr(item)
@@ -48,7 +48,7 @@ class ClauseFactory:
     def match(cls, pattern_element: PatternElement) -> Match:
         return Match(
             pattern=Pattern(
-                items=NonEmptyList[PatternPart](
+                items=NonEmptySequence[PatternPart](
                     PatternPart(pattern_element),
                 ),
             ),
@@ -69,7 +69,7 @@ class ClauseFactory:
             )
 
         return Set(
-            items=NonEmptyList[SetItem](
+            items=NonEmptySequence[SetItem](
                 set_item(parameter),
                 *(
                     set_item(item)

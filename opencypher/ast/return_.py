@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Iterable, Optional, Union
 
-from opencypher.ast.collection import NonEmptyList
+from opencypher.ast.collection import NonEmptySequence
 from opencypher.ast.expression import Expression, Parameter, Parameterized
 from opencypher.ast.formatting import str_join
 from opencypher.ast.ordering import Order
@@ -45,7 +45,7 @@ ReturnItems = ('*', { [SP], ',', [SP], ReturnItem })
 """
 # omitted: explicit wildcard support; as of this writing the Expression grammar is sufficiently
 # permissive to allow '*' to be passed as an expression.
-ReturnItems = NonEmptyList[ReturnItem]
+ReturnItems = NonEmptySequence[ReturnItem]
 
 
 @dataclass(frozen=True)

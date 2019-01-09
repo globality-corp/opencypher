@@ -9,7 +9,7 @@ from opencypher.ast import (
     MapLiteral,
     NodeLabel,
     NodePattern,
-    NonEmptyList,
+    NonEmptySequence,
     PatternElement,
     PatternElementChain,
     RelationshipPattern,
@@ -25,7 +25,7 @@ def _node(variable: Optional[str] = None,
           properties: Optional[MapLiteral] = None) -> NodePattern:
     return NodePattern(
         variable=Variable(variable) if variable else None,
-        labels=NonEmptyList(
+        labels=NonEmptySequence(
             NodeLabel(labels[0]),
             *(
                 NodeLabel(label)
@@ -46,13 +46,14 @@ class RelationshipDetailBuilder:
              *labels: str,
              properties: Optional[MapLiteral] = None) -> "PatternElementBuilder":
 
-        self.builder.items.append(
-            PatternElementChain(
-                relationship_pattern=self.relationship_pattern,
-                node_pattern=_node(variable, *labels, properties=properties)
-            ),
+        chain = PatternElementChain(
+            relationship_pattern=self.relationship_pattern,
+            node_pattern=_node(variable, *labels, properties=properties)
         )
-        return self.builder
+        return PatternElementBuilder(
+            node_pattern=self.builder.node_pattern,
+            items=(*self.builder.items, chain) if self.builder.items else (chain, ),
+        )
 
 
 class PatternElementBuilder(PatternElement):
@@ -78,7 +79,7 @@ class PatternElementBuilder(PatternElement):
             relationship_pattern=RelationshipPattern(
                 detail=RelationshipDetail(
                     variable=Variable(value) if value else None,
-                    types=NonEmptyList(
+                    types=NonEmptySequence(
                         RelTypeName(types[0]),
                         *(
                             RelTypeName(type_)

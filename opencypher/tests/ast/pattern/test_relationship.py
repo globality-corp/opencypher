@@ -7,7 +7,7 @@ from opencypher.ast import (
     RelationshipPattern,
     RelationshipPatternType,
     RelTypeName,
-    NonEmptyList,
+    NonEmptySequence,
     Parameter,
     Variable,
 )
@@ -58,7 +58,7 @@ from opencypher.ast import (
 def test_relationship_detail(variable, types, properties, query, parameters):
     ast = RelationshipDetail(
         variable=Variable(variable) if variable is not None else None,
-        types=NonEmptyList[RelTypeName](
+        types=NonEmptySequence[RelTypeName](
             RelTypeName(types[0]),
             *(
                 RelTypeName(type_)

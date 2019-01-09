@@ -1,4 +1,4 @@
-from typing import Iterable, List, Optional
+from typing import Iterable, Optional, Sequence
 
 from opencypher.ast import (
     Expression,
@@ -6,7 +6,7 @@ from opencypher.ast import (
     FunctionInvocation,
     FunctionName,
     MapLiteral,
-    NonEmptyList,
+    NonEmptySequence,
     Parameter,
     Variable,
 )
@@ -34,7 +34,7 @@ class Functions(FunctionInvocation):
         return ExpressionBuilder(
             cls(
                 name=name,
-                expressions=NonEmptyList[Expression](
+                expressions=NonEmptySequence[Expression](
                     expression,
                     *expressions,
                 ),
@@ -57,7 +57,7 @@ func = Functions
 
 def parameters(key_prefix: Optional[str] = None,
                name_prefix: Optional[str] = None,
-               **kwargs: str) -> List[Parameter]:
+               **kwargs: str) -> Sequence[Parameter]:
     return [
         Parameter(
             key=f"{key_prefix}.{key}" if key_prefix else key,

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Iterable
 
-from opencypher.ast.collection import NonEmptyList
+from opencypher.ast.collection import NonEmptySequence
 from opencypher.ast.expression import Expression, Parameter, Parameterized
 from opencypher.ast.formatting import str_join
 
@@ -12,7 +12,7 @@ class Delete(Parameterized):
     Delete = [(D,E,T,A,C,H), SP], (D,E,L,E,T,E), [SP], Expression, { [SP], ',', [SP], Expression } ;
 
     """
-    items: NonEmptyList[Expression]
+    items: NonEmptySequence[Expression]
     detach: bool = False
 
     def __str__(self) -> str:

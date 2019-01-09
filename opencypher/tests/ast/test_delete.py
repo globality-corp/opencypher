@@ -3,13 +3,13 @@ from hamcrest import assert_that, equal_to, is_
 from opencypher.ast import (
     Delete,
     Expression,
-    NonEmptyList,
+    NonEmptySequence,
 )
 
 
 def test_delete():
     ast = Delete(
-        items=NonEmptyList[Expression](
+        items=NonEmptySequence[Expression](
             Expression("foo"),
         ),
     )
@@ -25,7 +25,7 @@ def test_delete():
 
 def test_detach_delete():
     ast = Delete(
-        items=NonEmptyList[Expression](
+        items=NonEmptySequence[Expression](
             Expression("foo"),
         ),
         detach=True,

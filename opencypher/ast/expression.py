@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Iterable, Iterator, Tuple, Union
 
-from opencypher.ast.collection import NonEmptyList
+from opencypher.ast.collection import NonEmptySequence
 from opencypher.ast.formatting import str_join
 from opencypher.ast.naming import (
     FunctionName,
@@ -61,7 +61,7 @@ class FunctionInvocation(Parameterized):
 
     """
     name: FunctionName
-    expressions: NonEmptyList["Expression"]
+    expressions: NonEmptySequence["Expression"]
     distinct: bool = False
 
     def __str__(self) -> str:

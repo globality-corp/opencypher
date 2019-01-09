@@ -1,7 +1,7 @@
 from hamcrest import assert_that, equal_to, is_
 
 from opencypher.ast import (
-    NonEmptyList,
+    NonEmptySequence,
     Pattern,
     PatternElement,
     PatternElementChain,
@@ -12,7 +12,7 @@ from opencypher.ast import (
 
 def test_pattern():
     ast = Pattern(
-        items=NonEmptyList[PatternPart](
+        items=NonEmptySequence[PatternPart](
             PatternPart(
                 pattern_element=PatternElement(
                     items=[],
@@ -33,7 +33,7 @@ def test_pattern():
 
 def test_pattern_chain():
     ast = Pattern(
-        items=NonEmptyList[PatternPart](
+        items=NonEmptySequence[PatternPart](
             PatternPart(
                 pattern_element=PatternElement(
                     items=[

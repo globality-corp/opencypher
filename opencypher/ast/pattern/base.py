@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
-from typing import Iterable, List, Optional
+from typing import Iterable, Optional, Sequence
 
-from opencypher.ast.collection import NonEmptyList
+from opencypher.ast.collection import NonEmptySequence
 from opencypher.ast.expression import Parameter, Parameterized
 from opencypher.ast.formatting import str_join
 from opencypher.ast.naming import Variable
@@ -35,7 +35,7 @@ class PatternElement(Parameterized):
 
     """
     node_pattern: NodePattern = field(default_factory=NodePattern)
-    items: List[PatternElementChain] = field(default_factory=list)
+    items: Optional[Sequence[PatternElementChain]] = None
 
     def __str__(self) -> str:
         # omitted: parenthesis wrapping
@@ -46,8 +46,9 @@ class PatternElement(Parameterized):
 
     def iter_parameters(self) -> Iterable[Parameter]:
         yield from self.node_pattern.iter_parameters()
-        for item in self.items:
-            yield from item.iter_parameters()
+        if self.items:
+            for item in self.items:
+                yield from item.iter_parameters()
 
 
 """
@@ -83,7 +84,7 @@ class Pattern(Parameterized):
     Pattern = PatternPart, { [SP], ',', [SP], PatternPart } ;
 
     """
-    items: NonEmptyList[PatternPart]
+    items: NonEmptySequence[PatternPart]
 
     def __str__(self) -> str:
         return str_join(self.items, ", ")

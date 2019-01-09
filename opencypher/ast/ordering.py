@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import Enum, unique
 from typing import Optional
 
-from opencypher.ast.collection import NonEmptyList
+from opencypher.ast.collection import NonEmptySequence
 from opencypher.ast.expression import Expression
 from opencypher.ast.formatting import str_join
 
@@ -38,7 +38,7 @@ class Order:
     Order = (O,R,D,E,R), SP, (B,Y), SP, SortItem, { ',', [SP], SortItem } ;
 
     """
-    items: NonEmptyList[SortItem]
+    items: NonEmptySequence[SortItem]
 
     def __str__(self) -> str:
         return f"ORDER BY {str_join(self.items, ', ')}"
