@@ -7,6 +7,10 @@ from opencypher.ast.pattern import Pattern
 
 @dataclass(frozen=True)
 class Create(Parameterized):
+    """
+    Create = (C,R,E,A,T,E), [SP], Pattern ;
+
+    """
     pattern: Pattern
 
     def __str__(self) -> str:

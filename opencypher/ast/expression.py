@@ -1,12 +1,12 @@
 from dataclasses import dataclass
 from typing import Iterable, Iterator, Tuple, Union
 
-from opencypher.ast.nonemptylist import stringify, NonEmptyList
-from opencypher.ast.values import (
+from opencypher.ast.collection import NonEmptyList
+from opencypher.ast.formatting import str_join
+from opencypher.ast.naming import (
     FunctionName,
     PropertyKeyName,
     SymbolicName,
-    Variable,
 )
 
 
@@ -36,6 +36,12 @@ class Parameterized:
 
 @dataclass(frozen=True)
 class Parameter(Parameterized):
+    """
+    Parameter = '$', (SymbolicName | DecimalInteger) ;
+
+    Keeps additional state for ease of producing bound query parameters.
+
+    """
     # omitted: DecimialInteger
     key: PropertyKeyName
     name: SymbolicName
@@ -50,17 +56,30 @@ class Parameter(Parameterized):
 
 @dataclass(frozen=True)
 class FunctionInvocation(Parameterized):
+    """
+    FunctionInvocation = FunctionName, [SP], '(', [SP], [(D,I,S,T,I,N,C,T), [SP]], [Expression, [SP], { ',', [SP], Expression, [SP] }], ')' ;  # noqa: E501
+
+    """
     name: FunctionName
     expressions: NonEmptyList["Expression"]
     distinct: bool = False
 
     def __str__(self) -> str:
         if self.distinct:
-            return f"{self.name}( DISTINCT {stringify(self.expressions)} )"
+            return f"{self.name}( DISTINCT {str_join(self.expressions)} )"
         else:
-            return f"{self.name}( {stringify(self.expressions)} )"
+            return f"{self.name}( {str_join(self.expressions)} )"
 
 
+"""
+Literal = NumberLiteral
+        | StringLiteral
+        | BooleanLiteral
+        | (N,U,L,L)
+        | MapLiteral
+        | ListLiteral
+        ;
+"""
 # omitting many things here
 Literal = Union[
     bool,
@@ -69,6 +88,23 @@ Literal = Union[
     str,
 ]
 
+"""
+Atom = Literal
+     | Parameter
+     | CaseExpression
+     | ((C,O,U,N,T), [SP], '(', [SP], '*', [SP], ')')
+     | ListComprehension
+     | PatternComprehension
+     | ((A,L,L), [SP], '(', [SP], FilterExpression, [SP], ')')
+     | ((A,N,Y), [SP], '(', [SP], FilterExpression, [SP], ')')
+     | ((N,O,N,E), [SP], '(', [SP], FilterExpression, [SP], ')')
+     | ((S,I,N,G,L,E), [SP], '(', [SP], FilterExpression, [SP], ')')
+     | RelationshipsPattern
+     | ParenthesizedExpression
+     | FunctionInvocation
+     | Variable
+     ;
+"""
 # omitting many things here
 Atom = Union[
     Literal,
@@ -79,6 +115,29 @@ Atom = Union[
 
 @dataclass(frozen=True)
 class Expression(Parameterized):
+    """
+    Expression = OrExpression ;
+    OrExpression = XorExpression, { SP, (O,R), SP, XorExpression } ;
+    XorExpression = AndExpression, { SP, (X,O,R), SP, AndExpression } ;
+    AndExpression = NotExpression, { SP, (A,N,D), SP, NotExpression } ;
+    NotExpression = { (N,O,T), [SP] }, ComparisonExpression ;
+    ComparisonExpression = AddOrSubtractExpression, { [SP], PartialComparisonExpression } ;
+    AddOrSubtractExpression = MultiplyDivideModuloExpression, { ([SP], '+', [SP], MultiplyDivideModuloExpression) | ([SP], '-', [SP], MultiplyDivideModuloExpression) } ;  # noqa: E501
+    MultiplyDivideModuloExpression = PowerOfExpression, { ([SP], '*', [SP], PowerOfExpression) | ([SP], '/', [SP], PowerOfExpression) | ([SP], '%', [SP], PowerOfExpression) } ;  # noqa: E501
+    PowerOfExpression = UnaryAddOrSubtractExpression, { [SP], '^', [SP], UnaryAddOrSubtractExpression } ;
+    UnaryAddOrSubtractExpression = { ('+' | '-'), [SP] }, StringListNullOperatorExpression ;
+    StringListNullOperatorExpression = PropertyOrLabelsExpression, { StringOperatorExpression | ListOperatorExpression | NullOperatorExpression } ;
+    ListOperatorExpression = (SP, (I,N), [SP], PropertyOrLabelsExpression)
+                           | ([SP], '[', Expression, ']')
+                           | ([SP], '[', [Expression], '..', [Expression], ']')
+                           ;
+    StringOperatorExpression = ((SP, (S,T,A,R,T,S), SP, (W,I,T,H)) | (SP, (E,N,D,S), SP, (W,I,T,H)) | (SP, (C,O,N,T,A,I,N,S))), [SP], PropertyOrLabelsExpression ;
+    NullOperatorExpression = (SP, (I,S), SP, (N,U,L,L))
+                           | (SP, (I,S), SP, (N,O,T), SP, (N,U,L,L))
+                           ;
+    PropertyOrLabelsExpression = Atom, { [SP], PropertyLookup }, [[SP], NodeLabels] ;
+
+    """
     # omitting many things here
     value: Atom
 
@@ -91,15 +150,3 @@ class Expression(Parameterized):
                 yield from expression.iter_parameters()
         elif isinstance(self.value, Parameter):
             yield from self.value.iter_parameters()
-
-
-@dataclass
-class ExpressionAlias(Parameterized):
-    expression: Expression
-    variable: Variable
-
-    def __str__(self) -> str:
-        return f"{str(self.expression)} AS {str(self.variable)}"
-
-    def iter_parameters(self) -> Iterable[Parameter]:
-        yield from self.expression.iter_parameters()

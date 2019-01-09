@@ -33,3 +33,16 @@ The resulting `Cypher` query object integrates with -- but does not depend on --
 
     with driver.session() as session:
         session.run(str(query), dict(query))
+
+
+## Caveats
+
+Some compromises have been made with respect to the completeness of the AST:
+
+  - The `REMOVE`, `UNWIND`, and `CALL` clauses are not yet implemented.
+  - Union (`UNION`) queries are not yet implemented.
+  - Multi-part (`WITH`) queries are not yet implemented.
+  - Relationship patterns cannot yet express range literals.
+  - `SET` clauses can only express simple variable assigngment.
+  - Parameters only support symbolic names (`$foo`) and not numeric values (`$1`)
+  - Expressions, literals, atoms, etc are deliberately simplified to `str` in many cases.

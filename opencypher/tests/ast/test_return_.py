@@ -16,6 +16,10 @@ from opencypher.ast import (
 
 @parameterized([
     (
+        False, ["*"], None, None, None,
+        "RETURN *",
+    ),
+    (
         False, ["foo", "bar"], None, None, None,
         "RETURN foo, bar",
     ),

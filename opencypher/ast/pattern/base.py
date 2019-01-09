@@ -1,15 +1,20 @@
 from dataclasses import dataclass, field
 from typing import Iterable, List, Optional
 
+from opencypher.ast.collection import NonEmptyList
 from opencypher.ast.expression import Parameter, Parameterized
-from opencypher.ast.nonemptylist import stringify, NonEmptyList
+from opencypher.ast.formatting import str_join
+from opencypher.ast.naming import Variable
 from opencypher.ast.pattern.node import NodePattern
 from opencypher.ast.pattern.relationship import RelationshipPattern
-from opencypher.ast.values import Variable
 
 
 @dataclass(frozen=True)
 class PatternElementChain(Parameterized):
+    """
+    PatternElementChain = RelationshipPattern, [SP], NodePattern ;
+
+    """
     relationship_pattern: RelationshipPattern = field(default_factory=RelationshipPattern)
     node_pattern: NodePattern = field(default_factory=NodePattern)
 
@@ -23,12 +28,19 @@ class PatternElementChain(Parameterized):
 
 @dataclass(frozen=True)
 class PatternElement(Parameterized):
+    """
+    PatternElement = (NodePattern, { [SP], PatternElementChain })
+                   | ('(', PatternElement, ')')
+                   ;
+
+    """
     node_pattern: NodePattern = field(default_factory=NodePattern)
     items: List[PatternElementChain] = field(default_factory=list)
 
     def __str__(self) -> str:
+        # omitted: parenthesis wrapping
         if self.items:
-            return f"{str(self.node_pattern)} {stringify(self.items)}"
+            return f"{str(self.node_pattern)} {str_join(self.items)}"
         else:
             return f"{str(self.node_pattern)}"
 
@@ -38,11 +50,20 @@ class PatternElement(Parameterized):
             yield from item.iter_parameters()
 
 
+"""
+AnonymousPatternPart = PatternElement ;
+
+"""
 AnonymousPatternPart = PatternElement
 
 
 @dataclass(frozen=True)
 class PatternPart(Parameterized):
+    """
+    PatternPart = (Variable, [SP], '=', [SP], AnonymousPatternPart)
+                | AnonymousPatternPart
+                ;
+    """
     pattern_element: AnonymousPatternPart = field(default_factory=AnonymousPatternPart)
     variable: Optional[Variable] = None
 
@@ -58,10 +79,14 @@ class PatternPart(Parameterized):
 
 @dataclass(frozen=True)
 class Pattern(Parameterized):
+    """
+    Pattern = PatternPart, { [SP], ',', [SP], PatternPart } ;
+
+    """
     items: NonEmptyList[PatternPart]
 
     def __str__(self) -> str:
-        return stringify(self.items, ", ")
+        return str_join(self.items, ", ")
 
     def iter_parameters(self) -> Iterable[Parameter]:
         for item in self.items:

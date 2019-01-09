@@ -3,7 +3,7 @@ from enum import Enum, unique
 from typing import Iterable, List
 
 from opencypher.ast.expression import Parameter, Parameterized
-from opencypher.ast.nonemptylist import stringify
+from opencypher.ast.formatting import str_join
 from opencypher.ast.pattern import PatternPart
 from opencypher.ast.set import Set
 
@@ -19,6 +19,12 @@ class MergeActionType(Enum):
 
 @dataclass(frozen=True)
 class MergeAction(Parameterized):
+    """
+    MergeAction = ((O,N), SP, (M,A,T,C,H), SP, Set)
+                | ((O,N), SP, (C,R,E,A,T,E), SP, Set)
+                ;
+
+    """
     action_type: MergeActionType
     then: Set
 
@@ -31,12 +37,16 @@ class MergeAction(Parameterized):
 
 @dataclass(frozen=True)
 class Merge(Parameterized):
+    """
+    Merge = (M,E,R,G,E), [SP], PatternPart, { SP, MergeAction } ;
+
+    """
     pattern_part: PatternPart
     actions: List[MergeAction] = field(default_factory=list)
 
     def __str__(self) -> str:
         if self.actions:
-            return f"MERGE {str(self.pattern_part)} {stringify(self.actions)}"
+            return f"MERGE {str(self.pattern_part)} {str_join(self.actions)}"
         else:
             return f"MERGE {str(self.pattern_part)}"
 

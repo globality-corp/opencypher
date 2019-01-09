@@ -1,21 +1,60 @@
 from dataclasses import dataclass
-from typing import Optional, Union
+from typing import Iterable, Optional, Union
 
-from opencypher.ast.expression import Expression, ExpressionAlias
+from opencypher.ast.collection import NonEmptyList
+from opencypher.ast.expression import Expression, Parameter, Parameterized
+from opencypher.ast.formatting import str_join
 from opencypher.ast.ordering import Order
 from opencypher.ast.paging import Limit, Skip
-from opencypher.ast.nonemptylist import stringify, NonEmptyList
+from opencypher.ast.naming import Variable
 
 
+@dataclass
+class ExpressionAlias(Parameterized):
+    """
+    ReturnItem = (Expression, SP, (A,S), SP, Variable)
+               | ...
+               ;
+    """
+    expression: Expression
+    variable: Variable
+
+    def __str__(self) -> str:
+        return f"{str(self.expression)} AS {str(self.variable)}"
+
+    def iter_parameters(self) -> Iterable[Parameter]:
+        yield from self.expression.iter_parameters()
+
+
+"""
+ReturnItem = (Expression, SP, (A,S), SP, Variable)
+           | Expression
+           ;
+
+"""
 ReturnItem = Union[
     Expression,
     ExpressionAlias,
 ]
 
 
+"""
+ReturnItems = ('*', { [SP], ',', [SP], ReturnItem })
+            | (ReturnItem, { [SP], ',', [SP], ReturnItem })
+            ;
+"""
+# omitted: explicit wildcard support; as of this writing the Expression grammar is sufficiently
+# permissive to allow '*' to be passed as an expression.
+ReturnItems = NonEmptyList[ReturnItem]
+
+
 @dataclass(frozen=True)
 class ReturnBody:
-    items: NonEmptyList[ReturnItem]
+    """
+    ReturnBody = ReturnItems, [SP, Order], [SP, Skip], [SP, Limit] ;
+
+    """
+    items: ReturnItems
     order: Optional[Order] = None
     skip: Optional[Skip] = None
     limit: Optional[Limit] = None
@@ -24,29 +63,33 @@ class ReturnBody:
         if self.order is not None:
             if self.skip is not None:
                 if self.limit is not None:
-                    return f"{stringify(self.items, ', ')} {str(self.order)} {str(self.skip)} {str(self.limit)}"
+                    return f"{str_join(self.items, ', ')} {str(self.order)} {str(self.skip)} {str(self.limit)}"
                 else:
-                    return f"{stringify(self.items, ', ')} {str(self.order)} {str(self.skip)}"
+                    return f"{str_join(self.items, ', ')} {str(self.order)} {str(self.skip)}"
             else:
                 if self.limit is not None:
-                    return f"{stringify(self.items, ', ')} {str(self.order)} {str(self.limit)}"
+                    return f"{str_join(self.items, ', ')} {str(self.order)} {str(self.limit)}"
                 else:
-                    return f"{stringify(self.items, ', ')} {str(self.order)}"
+                    return f"{str_join(self.items, ', ')} {str(self.order)}"
         else:
             if self.skip is not None:
                 if self.limit is not None:
-                    return f"{stringify(self.items, ', ')} {str(self.skip)} {str(self.limit)}"
+                    return f"{str_join(self.items, ', ')} {str(self.skip)} {str(self.limit)}"
                 else:
-                    return f"{stringify(self.items, ', ')} {str(self.skip)}"
+                    return f"{str_join(self.items, ', ')} {str(self.skip)}"
             else:
                 if self.limit is not None:
-                    return f"{stringify(self.items, ', ')} {str(self.limit)}"
+                    return f"{str_join(self.items, ', ')} {str(self.limit)}"
                 else:
-                    return f"{stringify(self.items, ', ')}"
+                    return f"{str_join(self.items, ', ')}"
 
 
 @dataclass(frozen=True)
 class Return:
+    """
+    Return = (R,E,T,U,R,N), [[SP], (D,I,S,T,I,N,C,T)], SP, ReturnBody ;
+
+    """
     body: ReturnBody
     distinct: bool = False
 

@@ -1,3 +1,6 @@
+from opencypher.ast.collection import (
+    NonEmptyList,
+)
 from opencypher.ast.create import (
     Create,
 )
@@ -13,7 +16,6 @@ from opencypher.ast.delete import (
 )
 from opencypher.ast.expression import (
     Expression,
-    ExpressionAlias,
     FunctionInvocation,
     Parameter,
 )
@@ -26,14 +28,17 @@ from opencypher.ast.merge import (
     MergeAction,
     MergeActionType,
 )
-from opencypher.ast.nonemptylist import (
-    stringify,
-    NonEmptyList,
-)
-from opencypher.ast.return_ import (
-    Return,
-    ReturnBody,
-    ReturnItem,
+from opencypher.ast.naming import (
+    LabelName,
+    FunctionName,
+    NodeLabel,
+    NodeLabels,
+    PropertyKeyName,
+    RelationshipTypes,
+    RelTypeName,
+    SchemaName,
+    SymbolicName,
+    Variable,
 )
 from opencypher.ast.ordering import (
     Order,
@@ -58,24 +63,19 @@ from opencypher.ast.properties import (
     MapLiteral,
     Properties,
 )
+from opencypher.ast.return_ import (
+    ExpressionAlias,
+    Return,
+    ReturnBody,
+    ReturnItem,
+)
 from opencypher.ast.set import (
     Set,
     SetItem,
 )
-from opencypher.ast.values import (
-    LabelName,
-    FunctionName,
-    NodeLabel,
-    PropertyKeyName,
-    RelTypeName,
-    SchemaName,
-    SymbolicName,
-    Variable,
-)
 
 
 __all__ = [
-    "stringify",
     "Create",
     "Cypher",
     "Delete",
@@ -91,6 +91,7 @@ __all__ = [
     "MergeAction",
     "MergeActionType",
     "NodeLabel",
+    "NodeLabels",
     "NodePattern",
     "NonEmptyList",
     "Order",
@@ -106,6 +107,7 @@ __all__ = [
     "RelationshipPattern",
     "RelationshipPatternType",
     "RelTypeName",
+    "RelationshipTypes",
     "ReturnBody",
     "Return",
     "ReturnItem",

@@ -2,8 +2,9 @@ from dataclasses import dataclass
 from enum import Enum, unique
 from typing import Optional
 
+from opencypher.ast.collection import NonEmptyList
 from opencypher.ast.expression import Expression
-from opencypher.ast.nonemptylist import stringify, NonEmptyList
+from opencypher.ast.formatting import str_join
 
 
 @unique
@@ -17,6 +18,10 @@ class SortOrder(Enum):
 
 @dataclass(frozen=True)
 class SortItem:
+    """
+    SortItem = Expression, [[SP], ((A,S,C,E,N,D,I,N,G) | (A,S,C) | (D,E,S,C,E,N,D,I,N,G) | (D,E,S,C))] ;
+
+    """
     expression: Expression
     order: Optional[SortOrder] = None
 
@@ -29,7 +34,11 @@ class SortItem:
 
 @dataclass(frozen=True)
 class Order:
+    """
+    Order = (O,R,D,E,R), SP, (B,Y), SP, SortItem, { ',', [SP], SortItem } ;
+
+    """
     items: NonEmptyList[SortItem]
 
     def __str__(self) -> str:
-        return f"ORDER BY {stringify(self.items, ', ')}"
+        return f"ORDER BY {str_join(self.items, ', ')}"

@@ -7,6 +7,10 @@ from opencypher.ast.pattern import Pattern
 
 @dataclass(frozen=True)
 class Where(Parameterized):
+    """
+    Where = (W,H,E,R,E), SP, Expression ;
+
+    """
     expression: Expression
 
     def __str__(self) -> str:
@@ -18,6 +22,10 @@ class Where(Parameterized):
 
 @dataclass(frozen=True)
 class Match(Parameterized):
+    """
+    Match = [(O,P,T,I,O,N,A,L), SP], (M,A,T,C,H), [SP], Pattern, [[SP], Where] ;
+
+    """
     pattern: Pattern
     optional: bool = False
     where: Optional[Where] = None
