@@ -2,7 +2,7 @@
 from setuptools import find_packages, setup
 
 project = "opencypher"
-version = "0.2.0"
+version = "0.2.1"
 
 url = "https://github.com/globality-corp/opencypher"
 
@@ -20,6 +20,7 @@ setup(
     license="Apache 2.0",
     description="OpenCypher AST and Builder API",
     long_description=long_description,
+    long_description_content_type="text/markdown",
     author="Globality Engineering",
     author_email="engineering@globality.com",
     url=url,
