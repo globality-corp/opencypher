@@ -61,3 +61,47 @@ def test_api():
             baz_bar="foo",
         ))),
     )
+
+
+def test_readme_query():
+    query = match(
+        node("person", "Person").rel_in().node("pet", "Pet")
+    ).ret(
+        "person",
+        "pet",
+    )
+    assert_that(
+        str(query),
+        is_(equal_to(
+            "MATCH ( person :Person ) - [ ] -> ( pet :Pet ) RETURN person, pet",
+        )),
+    )
+
+
+def test_readme_update():
+    query = match(
+        node("alice", "Person", {"name": "Alice"}),
+    ).match(
+        node("bob", "Person", {"name": "Bob"}),
+    ).merge(
+        node("bob").rel_in(types="IsFriendsWith").node("alice"),
+    ).merge(
+        node("alice").rel_in(types="IsFriendsWith").node("bob"),
+    )
+
+    assert_that(
+        str(query),
+        is_(equal_to(
+            "MATCH ( alice :Person { name: $alice_name } ) "
+            "MATCH ( bob :Person { name: $bob_name } ) "
+            "MERGE ( bob ) - [ :IsFriendsWith ] -> ( alice ) "
+            "MERGE ( alice ) - [ :IsFriendsWith ] -> ( bob )"
+        )),
+    )
+    assert_that(
+        dict(query),
+        is_(equal_to(dict(
+            alice_name="Alice",
+            bob_name="Bob",
+        ))),
+    )

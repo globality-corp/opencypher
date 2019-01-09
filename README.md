@@ -9,6 +9,11 @@ and a builder-oriented API for constructing Cypher queries.
 OpenCypher leans heavily on Python 3.7 `dataclasses` and `typing`.
 
 
+## Setup
+
+    pip install opencypher
+
+
 ## Usage
 
 The core API exposes a fluent builder interface for constructing queries and patterns:
@@ -22,7 +27,23 @@ The core API exposes a fluent builder interface for constructing queries and pat
         "pet",
     )
 
-    print(query)  #  MATCH ( person:Person ) - [ ] -> ( pet:Pet ) RETURN person, pet
+    print(query)  #  MATCH ( person :Person ) - [ ] -> ( pet :Pet ) RETURN person, pet
+
+The builder supports chaining patterns and chaining clauses; queries may terminate on either
+a return statement (`.ret()`) or on any updating clause (e.g. `create()`, `delete()`, `merge()`,
+and so forth.
+
+    from opencypher.api import match, node
+
+    query = match(
+        node("alice", "Person", {"name": "Alice"}),
+    ).match(
+        node("bob", "Person", {"name": "Bob"}),
+    ).merge(
+        node("bob").rel_in(types="IsFriendsWith").node("alice"),
+    ).merge(
+        node("alice").rel_in(types="IsFriendsWith").node("bob"),
+    )
 
 The resulting `Cypher` query object integrates with -- but does not depend on -- the
 [Neo4J Python driver](https://github.com/neo4j/neo4j-python-driver):
@@ -39,10 +60,23 @@ The resulting `Cypher` query object integrates with -- but does not depend on --
 
 Some compromises have been made with respect to the completeness of the AST:
 
-  - The `REMOVE`, `UNWIND`, and `CALL` clauses are not yet implemented.
-  - Union (`UNION`) queries are not yet implemented.
-  - Multi-part (`WITH`) queries are not yet implemented.
-  - Relationship patterns cannot yet express range literals.
-  - `SET` clauses can only express simple variable assigngment.
-  - Parameters only support symbolic names (`$foo`) and not numeric values (`$1`)
-  - Expressions, literals, atoms, etc are deliberately simplified to `str` in many cases.
+ 1. The grammar for expressions (and literals, atoms, etc.) has been deliberately simplified
+    and reduces to `str` in many cases. The expression grammar is likely to get more complete
+    over time.
+
+ 2. Several top level query clauses are not yet implemented, including:
+
+     -  `REMOVE`
+     -  `UNWIND`
+     -  `CALL`
+     -  `UNION`
+     -  `WITH`
+
+ 3. Several supported features are partially implemented:
+
+     -  Relationship patterns cannot yet express range literals.
+     -  `SET` clauses can only express simple variable assigngment.
+     -  Parameters do not support numeric values (`$1`); symbolic names (`$foo`) *are* supported.
+
+ 4. Parameters do not automatically generate unique identifiers/prefixes. Parameter names will be
+    derived from variable names where known, but no fallback exists yet for anonyomous pattern terms.
