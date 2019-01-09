@@ -25,6 +25,9 @@ setup(
     ],
     entry_points={
     },
+    extras_require=dict(
+        test="parameterized>=0.6.1",
+    ),
     tests_require=[
         "coverage>=4.5.2",
         "parameterized>=0.6.1",
