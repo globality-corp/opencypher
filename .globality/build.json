@@ -1,0 +1,7 @@
+{
+  "params": {
+    "name": "opencypher"
+  },
+  "type": "python-library",
+  "version": "2019.01.1"
+}
