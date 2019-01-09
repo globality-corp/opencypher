@@ -3,7 +3,7 @@ Pattern building.
 
 """
 from dataclasses import dataclass
-from typing import Optional
+from typing import Mapping, Optional, Sequence, Union
 
 from opencypher.ast import (
     MapLiteral,
@@ -18,11 +18,27 @@ from opencypher.ast import (
     RelTypeName,
     Variable,
 )
+from opencypher.builder.expression import (
+    parameters as build_parameters,
+    properties as build_properties,
+)
 
 
 def _node(variable: Optional[str] = None,
-          *labels: str,
-          properties: Optional[MapLiteral] = None) -> NodePattern:
+          labels: Optional[Union[str, Sequence[str]]] = None,
+          properties: Optional[Union[MapLiteral, Mapping[str, str]]] = None) -> NodePattern:
+
+    if isinstance(labels, str):
+        labels = (labels, )
+
+    if isinstance(properties, Mapping):
+        properties = build_properties(
+            build_parameters(
+                name_prefix=variable,
+                **properties,
+            ),
+        )
+
     return NodePattern(
         variable=Variable(variable) if variable else None,
         labels=NonEmptySequence(
@@ -43,12 +59,12 @@ class RelationshipDetailBuilder:
 
     def node(self,
              variable: Optional[str] = None,
-             *labels: str,
-             properties: Optional[MapLiteral] = None) -> "PatternElementBuilder":
+             labels: Optional[Union[str, Sequence[str]]] = None,
+             properties: Optional[Union[MapLiteral, Mapping[str, str]]] = None) -> "PatternElementBuilder":
 
         chain = PatternElementChain(
             relationship_pattern=self.relationship_pattern,
-            node_pattern=_node(variable, *labels, properties=properties)
+            node_pattern=_node(variable, labels=labels, properties=properties)
         )
         return PatternElementBuilder(
             node_pattern=self.builder.node_pattern,
@@ -61,24 +77,35 @@ class PatternElementBuilder(PatternElement):
     @classmethod
     def node(cls,
              variable: Optional[str] = None,
-             *labels: str,
-             properties: Optional[MapLiteral] = None) -> "PatternElementBuilder":
+             labels: Optional[Union[str, Sequence[str]]] = None,
+             properties: Optional[Union[MapLiteral, Mapping[str, str]]] = None) -> "PatternElementBuilder":
 
         return cls(
-            node_pattern=_node(variable, *labels, properties=properties)
+            node_pattern=_node(variable, labels=labels, properties=properties)
         )
 
     def rel(self,
-            value: Optional[str] = None,
-            *types: str,
-            properties: Optional[MapLiteral] = None,
+            variable: Optional[str] = None,
+            types: Optional[Union[str, Sequence[str]]] = None,
+            properties: Optional[Union[MapLiteral, Mapping[str, str]]] = None,
             pattern_type=RelationshipPatternType.NONE) -> RelationshipDetailBuilder:
+
+        if isinstance(types, str):
+            types = (types, )
+
+        if isinstance(properties, Mapping):
+            properties = build_properties(
+                build_parameters(
+                    name_prefix=variable,
+                    **properties,
+                ),
+            )
 
         return RelationshipDetailBuilder(
             builder=self,
             relationship_pattern=RelationshipPattern(
                 detail=RelationshipDetail(
-                    variable=Variable(value) if value else None,
+                    variable=Variable(variable) if variable else None,
                     types=NonEmptySequence(
                         RelTypeName(types[0]),
                         *(
@@ -93,18 +120,28 @@ class PatternElementBuilder(PatternElement):
         )
 
     def rel_in(self,
-               value: Optional[str] = None,
-               *types: str,
-               properties: Optional[MapLiteral] = None) -> RelationshipDetailBuilder:
+               variable: Optional[str] = None,
+               types: Optional[Union[str, Sequence[str]]] = None,
+               properties: Optional[Union[MapLiteral, Mapping[str, str]]] = None) -> RelationshipDetailBuilder:
 
-        return self.rel(value, *types, properties=properties, pattern_type=RelationshipPatternType.IN)
+        return self.rel(
+            variable=variable,
+            types=types,
+            properties=properties,
+            pattern_type=RelationshipPatternType.IN,
+        )
 
     def rel_out(self,
-                value: Optional[str] = None,
-                *types: str,
-                properties: Optional[MapLiteral] = None) -> RelationshipDetailBuilder:
+                variable: Optional[str] = None,
+                types: Optional[Union[str, Sequence[str]]] = None,
+                properties: Optional[Union[MapLiteral, Mapping[str, str]]] = None) -> RelationshipDetailBuilder:
 
-        return self.rel(value, *types, properties=properties, pattern_type=RelationshipPatternType.OUT)
+        return self.rel(
+            variable=variable,
+            types=types,
+            properties=properties,
+            pattern_type=RelationshipPatternType.OUT,
+        )
 
 
 node = PatternElementBuilder.node

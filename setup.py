@@ -15,7 +15,10 @@ setup(
     include_package_data=True,
     zip_safe=False,
     python_requires=">=3.7",
-    keywords="opencypher cypher",
+    classifiers=[
+        'Programming Language :: Python :: 3.7',
+    ],
+    keywords="opencypher cypher neo4j",
     install_requires=[
     ],
     setup_requires=[
