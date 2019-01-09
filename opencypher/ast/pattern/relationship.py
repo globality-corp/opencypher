@@ -1,15 +1,15 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum, unique
 from typing import Iterable, Optional
 
-from opencypher.ast.expression import Parameter
+from opencypher.ast.expression import Parameter, Parameterized
 from opencypher.ast.nonemptylist import stringify, NonEmptyList
 from opencypher.ast.properties import Properties
 from opencypher.ast.values import RelTypeName, Variable
 
 
 @dataclass(frozen=True)
-class RelationshipDetail:
+class RelationshipDetail(Parameterized):
     variable: Optional[Variable] = None
     types: Optional[NonEmptyList[RelTypeName]] = None
     # omitted: range_literal
@@ -41,10 +41,7 @@ class RelationshipDetail:
 
     def iter_parameters(self) -> Iterable[Parameter]:
         if self.properties is not None:
-            if isinstance(self.properties, Parameter):
-                yield self.properties
-            else:
-                yield from self.properties.iter_parameters()
+            yield from self.properties.iter_parameters()
 
 
 @dataclass(frozen=True)
@@ -56,9 +53,9 @@ class Arrow:
 @unique
 class RelationshipPatternType(Enum):
     BOTH = Arrow("<-", "->")
-    OUT = Arrow("<-", "-")
     IN = Arrow("-", "->")
     NONE = Arrow("-", "-")
+    OUT = Arrow("<-", "-")
 
     @property
     def left(self):
@@ -70,9 +67,9 @@ class RelationshipPatternType(Enum):
 
 
 @dataclass(frozen=True)
-class RelationshipPattern:
-    pattern_type: RelationshipPatternType
-    detail: RelationshipDetail
+class RelationshipPattern(Parameterized):
+    pattern_type: RelationshipPatternType = RelationshipPatternType.NONE
+    detail: RelationshipDetail = field(default_factory=RelationshipDetail)
 
     def __str__(self) -> str:
         return f"{self.pattern_type.left} {str(self.detail)} {self.pattern_type.right}"

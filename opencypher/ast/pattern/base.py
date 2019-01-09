@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Iterable, List, Optional
 
-from opencypher.ast.expression import Parameter
+from opencypher.ast.expression import Parameter, Parameterized
 from opencypher.ast.nonemptylist import stringify, NonEmptyList
 from opencypher.ast.pattern.node import NodePattern
 from opencypher.ast.pattern.relationship import RelationshipPattern
@@ -9,9 +9,9 @@ from opencypher.ast.values import Variable
 
 
 @dataclass(frozen=True)
-class PatternElementChain:
-    relationship_pattern: RelationshipPattern
-    node_pattern: NodePattern
+class PatternElementChain(Parameterized):
+    relationship_pattern: RelationshipPattern = field(default_factory=RelationshipPattern)
+    node_pattern: NodePattern = field(default_factory=NodePattern)
 
     def __str__(self) -> str:
         return f"{str(self.relationship_pattern)} {str(self.node_pattern)}"
@@ -22,8 +22,8 @@ class PatternElementChain:
 
 
 @dataclass(frozen=True)
-class PatternElement:
-    node_pattern: NodePattern
+class PatternElement(Parameterized):
+    node_pattern: NodePattern = field(default_factory=NodePattern)
     items: List[PatternElementChain] = field(default_factory=list)
 
     def __str__(self) -> str:
@@ -42,8 +42,8 @@ AnonymousPatternPart = PatternElement
 
 
 @dataclass(frozen=True)
-class PatternPart:
-    pattern_element: AnonymousPatternPart
+class PatternPart(Parameterized):
+    pattern_element: AnonymousPatternPart = field(default_factory=AnonymousPatternPart)
     variable: Optional[Variable] = None
 
     def __str__(self) -> str:
@@ -57,7 +57,7 @@ class PatternPart:
 
 
 @dataclass(frozen=True)
-class Pattern:
+class Pattern(Parameterized):
     items: NonEmptyList[PatternPart]
 
     def __str__(self) -> str:

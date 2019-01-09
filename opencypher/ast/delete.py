@@ -1,12 +1,12 @@
 from dataclasses import dataclass
 from typing import Iterable
 
-from opencypher.ast.expression import Expression, Parameter
+from opencypher.ast.expression import Expression, Parameter, Parameterized
 from opencypher.ast.nonemptylist import stringify, NonEmptyList
 
 
 @dataclass(frozen=True)
-class Delete:
+class Delete(Parameterized):
     items: NonEmptyList[Expression]
     detach: bool = False
 

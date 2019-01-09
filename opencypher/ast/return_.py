@@ -2,9 +2,9 @@ from dataclasses import dataclass
 from typing import Optional, Union
 
 from opencypher.ast.expression import Expression, ExpressionAlias
+from opencypher.ast.ordering import Order
 from opencypher.ast.paging import Limit, Skip
 from opencypher.ast.nonemptylist import stringify, NonEmptyList
-from opencypher.ast.sorting import Order
 
 
 ReturnItem = Union[

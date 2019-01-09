@@ -1,12 +1,12 @@
 from dataclasses import dataclass
 from typing import Iterable
 
-from opencypher.ast.expression import Parameter
+from opencypher.ast.expression import Parameter, Parameterized
 from opencypher.ast.pattern import Pattern
 
 
 @dataclass(frozen=True)
-class Create:
+class Create(Parameterized):
     pattern: Pattern
 
     def __str__(self) -> str:

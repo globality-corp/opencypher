@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from enum import Enum, unique
 from typing import Iterable, List
 
-from opencypher.ast.expression import Parameter
+from opencypher.ast.expression import Parameter, Parameterized
 from opencypher.ast.nonemptylist import stringify
 from opencypher.ast.pattern import PatternPart
 from opencypher.ast.set import Set
@@ -18,29 +18,29 @@ class MergeActionType(Enum):
 
 
 @dataclass(frozen=True)
-class MergeAction:
-    merge_action_type: MergeActionType
-    set_clause: Set
+class MergeAction(Parameterized):
+    action_type: MergeActionType
+    then: Set
 
     def __str__(self) -> str:
-        return f"ON {str(self.merge_action_type)} {str(self.set_clause)}"
+        return f"ON {str(self.action_type)} {str(self.then)}"
 
     def iter_parameters(self) -> Iterable[Parameter]:
-        yield from self.set_clause.iter_parameters()
+        yield from self.then.iter_parameters()
 
 
 @dataclass(frozen=True)
-class Merge:
+class Merge(Parameterized):
     pattern_part: PatternPart
-    merge_actions: List[MergeAction] = field(default_factory=list)
+    actions: List[MergeAction] = field(default_factory=list)
 
     def __str__(self) -> str:
-        if self.merge_actions:
-            return f"MERGE {str(self.pattern_part)} {stringify(self.merge_actions)}"
+        if self.actions:
+            return f"MERGE {str(self.pattern_part)} {stringify(self.actions)}"
         else:
             return f"MERGE {str(self.pattern_part)}"
 
     def iter_parameters(self) -> Iterable[Parameter]:
         yield from self.pattern_part.iter_parameters()
-        for merge_action in self.merge_actions:
-            yield from merge_action.iter_parameters()
+        for action in self.actions:
+            yield from action.iter_parameters()

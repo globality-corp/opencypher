@@ -18,7 +18,7 @@ class SortOrder(Enum):
 @dataclass(frozen=True)
 class SortItem:
     expression: Expression
-    order: Optional[SortOrder]
+    order: Optional[SortOrder] = None
 
     def __str__(self) -> str:
         if self.order is not None:

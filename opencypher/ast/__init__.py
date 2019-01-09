@@ -1,6 +1,13 @@
 from opencypher.ast.create import (
     Create,
 )
+from opencypher.ast.cypher import (
+    Cypher,
+    ReadingClause,
+    SinglePartReadQuery,
+    SinglePartWriteQuery,
+    UpdatingClause,
+)
 from opencypher.ast.delete import (
     Delete,
 )
@@ -16,6 +23,8 @@ from opencypher.ast.match import (
 )
 from opencypher.ast.merge import (
     Merge,
+    MergeAction,
+    MergeActionType,
 )
 from opencypher.ast.nonemptylist import (
     stringify,
@@ -25,6 +34,11 @@ from opencypher.ast.return_ import (
     Return,
     ReturnBody,
     ReturnItem,
+)
+from opencypher.ast.ordering import (
+    Order,
+    SortItem,
+    SortOrder,
 )
 from opencypher.ast.paging import (
     Limit,
@@ -44,21 +58,9 @@ from opencypher.ast.properties import (
     MapLiteral,
     Properties,
 )
-from opencypher.ast.query import (
-    Cypher,
-    ReadingClause,
-    SinglePartReadQuery,
-    SinglePartWriteQuery,
-    UpdatingClause,
-)
 from opencypher.ast.set import (
     Set,
     SetItem,
-)
-from opencypher.ast.sorting import (
-    Order,
-    SortItem,
-    SortOrder,
 )
 from opencypher.ast.values import (
     LabelName,
@@ -86,6 +88,8 @@ __all__ = [
     "MapLiteral",
     "Match",
     "Merge",
+    "MergeAction",
+    "MergeActionType",
     "NodeLabel",
     "NodePattern",
     "NonEmptyList",

@@ -1,9 +1,9 @@
 from dataclasses import dataclass, field
-from typing import Iterable, Iterator, List, Optional, Tuple, Union
+from typing import Iterable, List, Optional, Union
 
 from opencypher.ast.create import Create
 from opencypher.ast.delete import Delete
-from opencypher.ast.expression import Parameter
+from opencypher.ast.expression import Parameter, Parameterized
 from opencypher.ast.match import Match
 from opencypher.ast.merge import Merge
 from opencypher.ast.nonemptylist import stringify, NonEmptyList
@@ -27,7 +27,7 @@ UpdatingClause = Union[
 
 
 @dataclass(frozen=True)
-class SinglePartReadQuery:
+class SinglePartReadQuery(Parameterized):
     return_: Return
     reading_clauses: List[ReadingClause] = field(default_factory=list)
 
@@ -43,7 +43,7 @@ class SinglePartReadQuery:
 
 
 @dataclass(frozen=True)
-class SinglePartWriteQuery:
+class SinglePartWriteQuery(Parameterized):
     updating_clauses: NonEmptyList[UpdatingClause]
     reading_clauses: List[ReadingClause] = field(default_factory=list)
     return_: Optional[Return] = None
@@ -92,17 +92,11 @@ Statement = Query
 
 
 @dataclass(frozen=True)
-class Cypher:
+class Cypher(Parameterized):
     statement: Statement
 
     def __str__(self):
         return str(self.statement)
-
-    def __iter__(self) -> Iterator[Tuple[str, str]]:
-        return iter(
-            (parameter.name, parameter.value)
-            for parameter in self.iter_parameters()
-        )
 
     def iter_parameters(self) -> Iterable[Parameter]:
         yield from self.statement.iter_parameters()

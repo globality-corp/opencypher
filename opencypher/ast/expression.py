@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Iterable, Union
+from typing import Iterable, Iterator, Tuple, Union
 
 from opencypher.ast.nonemptylist import stringify, NonEmptyList
 from opencypher.ast.values import (
@@ -10,8 +10,32 @@ from opencypher.ast.values import (
 )
 
 
+class Parameterized:
+    """
+    A mixin for an object that has zero or more `Parameter`.
+
+    """
+    def __iter__(self) -> Iterator[Tuple[str, str]]:
+        """
+        Expose parameters as an iterable such that `dict(self)` can be passed to the driver
+        as a parameter dictionary.
+
+        """
+        return iter(
+            (parameter.name, parameter.value)
+            for parameter in self.iter_parameters()
+        )
+
+    def iter_parameters(self) -> Iterable["Parameter"]:
+        """
+        Iterate over available parameters.
+
+        """
+        return ()
+
+
 @dataclass(frozen=True)
-class Parameter:
+class Parameter(Parameterized):
     # omitted: DecimialInteger
     key: PropertyKeyName
     name: SymbolicName
@@ -25,14 +49,14 @@ class Parameter:
 
 
 @dataclass(frozen=True)
-class FunctionInvocation:
+class FunctionInvocation(Parameterized):
     name: FunctionName
     expressions: NonEmptyList["Expression"]
     distinct: bool = False
 
     def __str__(self) -> str:
         if self.distinct:
-            return f"{self.name}( DISTINCT {str(self.expressions)} )"
+            return f"{self.name}( DISTINCT {stringify(self.expressions)} )"
         else:
             return f"{self.name}( {stringify(self.expressions)} )"
 
@@ -54,7 +78,7 @@ Atom = Union[
 
 
 @dataclass(frozen=True)
-class Expression:
+class Expression(Parameterized):
     # omitting many things here
     value: Atom
 
@@ -70,9 +94,12 @@ class Expression:
 
 
 @dataclass
-class ExpressionAlias:
+class ExpressionAlias(Parameterized):
     expression: Expression
     variable: Variable
 
     def __str__(self) -> str:
         return f"{str(self.expression)} AS {str(self.variable)}"
+
+    def iter_parameters(self) -> Iterable[Parameter]:
+        yield from self.expression.iter_parameters()

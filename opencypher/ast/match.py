@@ -1,12 +1,12 @@
 from dataclasses import dataclass
 from typing import Iterable, Optional
 
-from opencypher.ast.expression import Expression, Parameter
+from opencypher.ast.expression import Expression, Parameter, Parameterized
 from opencypher.ast.pattern import Pattern
 
 
 @dataclass(frozen=True)
-class Where:
+class Where(Parameterized):
     expression: Expression
 
     def __str__(self) -> str:
@@ -17,7 +17,7 @@ class Where:
 
 
 @dataclass(frozen=True)
-class Match:
+class Match(Parameterized):
     pattern: Pattern
     optional: bool = False
     where: Optional[Where] = None

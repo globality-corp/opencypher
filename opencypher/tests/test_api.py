@@ -32,25 +32,25 @@ class TestAPI:
     def test_node(self):
         assert_that(
             str(self.node),
-            is_(equal_to("( foo:Foo { bar: $foo_bar } )")),
+            is_(equal_to("( foo :Foo { bar: $foo_bar } )")),
         )
 
     def test_rel(self):
         assert_that(
             str(self.node.rel("bar", "Bar").node("baz", "Baz")),
-            is_(equal_to("( foo:Foo { bar: $foo_bar } ) - [ bar :Bar ] - ( baz:Baz )")),
+            is_(equal_to("( foo :Foo { bar: $foo_bar } ) - [ bar :Bar ] - ( baz :Baz )")),
         )
 
     def test_rel_in(self):
         assert_that(
             str(self.node.rel_in("bar", "Bar").node("baz", "Baz")),
-            is_(equal_to("( foo:Foo { bar: $foo_bar } ) - [ bar :Bar ] -> ( baz:Baz )")),
+            is_(equal_to("( foo :Foo { bar: $foo_bar } ) - [ bar :Bar ] -> ( baz :Baz )")),
         )
 
     def test_rel_out(self):
         assert_that(
             str(self.node.rel_out("bar", "Bar").node("baz", "Baz")),
-            is_(equal_to("( foo:Foo { bar: $foo_bar } ) <- [ bar :Bar ] - ( baz:Baz )")),
+            is_(equal_to("( foo :Foo { bar: $foo_bar } ) <- [ bar :Bar ] - ( baz :Baz )")),
         )
 
     def test_delete(self):
@@ -85,7 +85,7 @@ class TestAPI:
         query = match(self.node).ret("foo")
         assert_that(
             str(query),
-            is_(equal_to("MATCH ( foo:Foo { bar: $foo_bar } ) RETURN foo")),
+            is_(equal_to("MATCH ( foo :Foo { bar: $foo_bar } ) RETURN foo")),
         )
         assert_that(
             dict(query),

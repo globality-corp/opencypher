@@ -27,6 +27,7 @@ setup(
     },
     tests_require=[
         "coverage>=4.5.2",
+        "parameterized>=0.6.1",
         "PyHamcrest>=1.9.0",
     ],
 )
