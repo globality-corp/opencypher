@@ -1,7 +1,7 @@
 from opencypher.builder.expression import func, expr, parameters, properties
 from opencypher.builder.cypher import CypherBuilder
 from opencypher.builder.pattern import node
-from opencypher.builder.return_ import asc, desc
+from opencypher.builder.return_ import asc, desc, order
 
 
 # default builder
@@ -27,6 +27,7 @@ __all__ = [
     "match",
     "merge",
     "node",
+    "order",
     "parameters",
     "properties",
     "ret",

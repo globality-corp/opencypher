@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Iterable, Iterator, List, Optional, Tuple
+from typing import Iterable, List, Optional
 
 from opencypher.ast import (
     Cypher,
@@ -13,11 +13,12 @@ from opencypher.ast import (
     SinglePartWriteQuery,
     UpdatingClause,
 )
+from opencypher.ast.expression import Parameterized
 from opencypher.builder.clause import ClauseFactory
 from opencypher.builder.return_ import ReturnFactory
 
 
-class CypherWriteBuilder:
+class CypherWriteBuilder(Parameterized):
 
     def __init__(self,
                  updating_clause: UpdatingClause,
@@ -85,9 +86,6 @@ class CypherWriteBuilder:
 
     def __str__(self) -> str:
         return str(self.ret())
-
-    def __iter__(self) -> Iterator[Tuple[str, str]]:
-        return self.ret().__iter__()
 
     def iter_parameters(self) -> Iterable[Parameter]:
         yield from self.ret().iter_parameters()

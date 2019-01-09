@@ -60,3 +60,4 @@ class ReturnFactory:
 
 asc = ReturnFactory.asc
 desc = ReturnFactory.desc
+order = ReturnFactory.order
