@@ -6,7 +6,7 @@ from opencypher.ast import (
     Merge,
     MergeAction,
     MergeActionType,
-    NonEmptyList,
+    NonEmptySequence,
     PatternPart,
     Set,
     SetItem,
@@ -49,7 +49,7 @@ def test_match(action_types, query, parameters):
             MergeAction(
                 action_type=action_type,
                 then=Set(
-                    items=NonEmptyList[SetItem](
+                    items=NonEmptySequence[SetItem](
                         SetItem(
                             variable="foo",
                             expression=Expression("bar"),

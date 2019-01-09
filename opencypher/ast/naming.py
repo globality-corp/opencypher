@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from opencypher.ast.collection import NonEmptyList
+from opencypher.ast.collection import NonEmptySequence
 
 
 """
@@ -76,7 +76,7 @@ class NodeLabel:
 NodeLabels = NodeLabel, { [SP], NodeLabel } ;
 
 """
-NodeLabels = NonEmptyList[NodeLabel]
+NodeLabels = NonEmptySequence[NodeLabel]
 
 
 @dataclass(frozen=True)
@@ -103,4 +103,4 @@ RelationshipTypes = ':', [SP], RelTypeName, { [SP], '|', [':'], [SP], RelTypeNam
 
 """
 # NB: the ':' is included in RelTypeName's __str__ function for simplicity
-RelationshipTypes = NonEmptyList[RelTypeName]
+RelationshipTypes = NonEmptySequence[RelTypeName]

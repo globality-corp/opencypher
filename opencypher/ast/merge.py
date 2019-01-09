@@ -1,6 +1,6 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum, unique
-from typing import Iterable, List
+from typing import Iterable, Optional, Sequence
 
 from opencypher.ast.expression import Parameter, Parameterized
 from opencypher.ast.formatting import str_join
@@ -42,7 +42,7 @@ class Merge(Parameterized):
 
     """
     pattern_part: PatternPart
-    actions: List[MergeAction] = field(default_factory=list)
+    actions: Optional[Sequence[MergeAction]] = None
 
     def __str__(self) -> str:
         if self.actions:
@@ -52,5 +52,6 @@ class Merge(Parameterized):
 
     def iter_parameters(self) -> Iterable[Parameter]:
         yield from self.pattern_part.iter_parameters()
-        for action in self.actions:
-            yield from action.iter_parameters()
+        if self.actions:
+            for action in self.actions:
+                yield from action.iter_parameters()

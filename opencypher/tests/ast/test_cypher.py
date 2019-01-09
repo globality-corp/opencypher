@@ -7,7 +7,7 @@ from opencypher.ast import (
     Match,
     Merge,
     NodePattern,
-    NonEmptyList,
+    NonEmptySequence,
     Pattern,
     PatternElement,
     PatternPart,
@@ -21,7 +21,7 @@ from opencypher.ast import (
 
 MATCH = Match(
     Pattern(
-        items=NonEmptyList[PatternPart](
+        items=NonEmptySequence[PatternPart](
             PatternPart(
                 PatternElement(
                     NodePattern(),
@@ -49,7 +49,7 @@ def test_read(reading_clause, query, parameters):
         statement=SinglePartReadQuery(
             return_=Return(
                 body=ReturnBody(
-                    items=NonEmptyList[ReturnItem](
+                    items=NonEmptySequence[ReturnItem](
                         Expression("foo"),
                     ),
                 ),
@@ -96,7 +96,7 @@ def test_write(value, reading_clause, query, parameters):
         statement=SinglePartWriteQuery(
             return_=Return(
                 body=ReturnBody(
-                    items=NonEmptyList[ReturnItem](
+                    items=NonEmptySequence[ReturnItem](
                         Expression(value),
                     ),
                 ),

@@ -4,7 +4,7 @@ from opencypher.ast import (
     Expression,
     ExpressionAlias,
     FunctionInvocation,
-    NonEmptyList,
+    NonEmptySequence,
     Parameter,
     Variable,
 )
@@ -13,7 +13,7 @@ from opencypher.ast import (
 def test_function_invocation():
     ast = FunctionInvocation(
         Expression("foo"),
-        expressions=NonEmptyList[Expression](
+        expressions=NonEmptySequence[Expression](
             "bar",
         ),
     )
@@ -30,7 +30,7 @@ def test_function_invocation():
 def test_distinct_function_invocation():
     ast = FunctionInvocation(
         Expression("foo"),
-        expressions=NonEmptyList[Expression](
+        expressions=NonEmptySequence[Expression](
             "bar",
         ),
         distinct=True,
@@ -75,7 +75,7 @@ def test_expression_function_invocation():
     ast = Expression(
         FunctionInvocation(
             Expression("foo"),
-            expressions=NonEmptyList[Expression](
+            expressions=NonEmptySequence[Expression](
                 Expression(
                     "bar",
                 ),

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Iterable
 
-from opencypher.ast.collection import NonEmptyList
+from opencypher.ast.collection import NonEmptySequence
 from opencypher.ast.expression import Expression, Parameter
 from opencypher.ast.formatting import str_join
 from opencypher.ast.naming import Variable
@@ -36,7 +36,7 @@ class Set:
     Set = (S,E,T), [SP], SetItem, { ',', SetItem } ;
 
     """
-    items: NonEmptyList[SetItem]
+    items: NonEmptySequence[SetItem]
 
     def __str__(self) -> str:
         return f"SET {str_join(self.items, ', ')}"

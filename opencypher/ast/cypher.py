@@ -1,7 +1,7 @@
-from dataclasses import dataclass, field
-from typing import Iterable, List, Optional, Union
+from dataclasses import dataclass
+from typing import Iterable, Optional, Sequence, Union
 
-from opencypher.ast.collection import NonEmptyList
+from opencypher.ast.collection import NonEmptySequence
 from opencypher.ast.create import Create
 from opencypher.ast.delete import Delete
 from opencypher.ast.expression import Parameter, Parameterized
@@ -51,7 +51,7 @@ class SinglePartReadQuery(Parameterized):
                     ;
     """
     return_: Return
-    reading_clauses: List[ReadingClause] = field(default_factory=list)
+    reading_clauses: Optional[Sequence[ReadingClause]] = None
 
     def __str__(self) -> str:
         if self.reading_clauses:
@@ -60,8 +60,9 @@ class SinglePartReadQuery(Parameterized):
             return f"{str(self.return_)}"
 
     def iter_parameters(self) -> Iterable[Parameter]:
-        for reading_clause in self.reading_clauses:
-            yield from reading_clause.iter_parameters()
+        if self.reading_clauses:
+            for reading_clause in self.reading_clauses:
+                yield from reading_clause.iter_parameters()
 
 
 @dataclass(frozen=True)
@@ -72,8 +73,8 @@ class SinglePartWriteQuery(Parameterized):
                     ;
 
     """
-    updating_clauses: NonEmptyList[UpdatingClause]
-    reading_clauses: List[ReadingClause] = field(default_factory=list)
+    updating_clauses: NonEmptySequence[UpdatingClause]
+    reading_clauses: Optional[Sequence[ReadingClause]] = None
     return_: Optional[Return] = None
 
     def __str__(self) -> str:
@@ -91,8 +92,9 @@ class SinglePartWriteQuery(Parameterized):
     def iter_parameters(self) -> Iterable[Parameter]:
         for updating_clause in self.updating_clauses:
             yield from updating_clause.iter_parameters()
-        for reading_clause in self.reading_clauses:
-            yield from reading_clause.iter_parameters()
+        if self.reading_clauses:
+            for reading_clause in self.reading_clauses:
+                yield from reading_clause.iter_parameters()
 
 
 """

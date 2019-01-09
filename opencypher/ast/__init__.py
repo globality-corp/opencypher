@@ -1,5 +1,5 @@
 from opencypher.ast.collection import (
-    NonEmptyList,
+    NonEmptySequence,
 )
 from opencypher.ast.create import (
     Create,
@@ -93,7 +93,7 @@ __all__ = [
     "NodeLabel",
     "NodeLabels",
     "NodePattern",
-    "NonEmptyList",
+    "NonEmptySequence",
     "Order",
     "Parameter",
     "Pattern",

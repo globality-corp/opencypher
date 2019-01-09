@@ -5,7 +5,7 @@ from opencypher.ast import (
     MapLiteral,
     NodeLabel,
     NodePattern,
-    NonEmptyList,
+    NonEmptySequence,
     Parameter,
     Variable,
 )
@@ -56,7 +56,7 @@ from opencypher.ast import (
 def test_relationship_detail(variable, labels, properties, query, parameters):
     ast = NodePattern(
         variable=Variable(variable) if variable is not None else None,
-        labels=NonEmptyList[NodeLabel](
+        labels=NonEmptySequence[NodeLabel](
             NodeLabel(labels[0]),
             *(
                 NodeLabel(label)

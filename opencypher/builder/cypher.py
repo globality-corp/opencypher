@@ -3,7 +3,7 @@ from typing import Iterable, List, Optional
 
 from opencypher.ast import (
     Cypher,
-    NonEmptyList,
+    NonEmptySequence,
     Order,
     Parameter,
     PatternElement,
@@ -25,9 +25,9 @@ class CypherWriteBuilder(Parameterized):
                  reading_clauses: Optional[List[ReadingClause]] = None,
                  clause_factory: Optional[ClauseFactory] = None,
                  return_factory: Optional[ReturnFactory] = None):
-        self.updating_clauses: NonEmptyList[UpdatingClause] = NonEmptyList[UpdatingClause](
+        self.updating_clauses: List[UpdatingClause] = [
             updating_clause,
-        )
+        ]
         self.reading_clauses: List[ReadingClause] = reading_clauses or []
         self.clause_factory: ClauseFactory = clause_factory or ClauseFactory()
         self.return_factory: ReturnFactory = return_factory or ReturnFactory()
@@ -70,7 +70,7 @@ class CypherWriteBuilder(Parameterized):
         return Cypher(
             statement=SinglePartWriteQuery(
                 reading_clauses=self.reading_clauses,
-                updating_clauses=NonEmptyList[UpdatingClause](
+                updating_clauses=NonEmptySequence[UpdatingClause](
                     self.updating_clauses[0],
                     *self.updating_clauses[1:],
                 ),

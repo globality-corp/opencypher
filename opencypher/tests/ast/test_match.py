@@ -4,7 +4,7 @@ from parameterized import parameterized
 from opencypher.ast import (
     Expression,
     Match,
-    NonEmptyList,
+    NonEmptySequence,
     Pattern,
     PatternPart,
     Where,
@@ -36,7 +36,7 @@ from opencypher.ast import (
 def test_match(optional, where, query, parameters):
     ast = Match(
         pattern=Pattern(
-            items=NonEmptyList[PatternPart](
+            items=NonEmptySequence[PatternPart](
                 PatternPart(),
             )
         ),
