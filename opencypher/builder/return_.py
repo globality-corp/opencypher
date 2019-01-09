@@ -24,6 +24,13 @@ class ReturnFactory:
                     expression=expr(item),
                     order=order,
                 ),
+                *(
+                    SortItem(
+                        expression=expr(item_),
+                        order=order,
+                    )
+                    for item_ in items
+                ),
             ),
         )
 

@@ -28,8 +28,8 @@ def _node(variable: Optional[str] = None,
         labels=NonEmptyList(
             NodeLabel(labels[0]),
             *(
-                NodeLabel(arg)
-                for arg in labels[1:]
+                NodeLabel(label)
+                for label in labels[1:]
             ),
         ) if labels else None,
         properties=properties,
@@ -69,7 +69,7 @@ class PatternElementBuilder(PatternElement):
 
     def rel(self,
             value: Optional[str] = None,
-            *args: str,
+            *types: str,
             properties: Optional[MapLiteral] = None,
             pattern_type=RelationshipPatternType.NONE) -> RelationshipDetailBuilder:
 
@@ -79,12 +79,12 @@ class PatternElementBuilder(PatternElement):
                 detail=RelationshipDetail(
                     variable=Variable(value) if value else None,
                     types=NonEmptyList(
-                        RelTypeName(args[0]),
+                        RelTypeName(types[0]),
                         *(
-                            RelTypeName(arg)
-                            for arg in args[1:]
+                            RelTypeName(type_)
+                            for type_ in types[1:]
                         ),
-                    ) if args else None,
+                    ) if types else None,
                     properties=properties,
                 ),
                 pattern_type=pattern_type,
@@ -93,17 +93,17 @@ class PatternElementBuilder(PatternElement):
 
     def rel_in(self,
                value: Optional[str] = None,
-               *args: str,
+               *types: str,
                properties: Optional[MapLiteral] = None) -> RelationshipDetailBuilder:
 
-        return self.rel(value, *args, properties=properties, pattern_type=RelationshipPatternType.IN)
+        return self.rel(value, *types, properties=properties, pattern_type=RelationshipPatternType.IN)
 
     def rel_out(self,
                 value: Optional[str] = None,
-                *args: str,
+                *types: str,
                 properties: Optional[MapLiteral] = None) -> RelationshipDetailBuilder:
 
-        return self.rel(value, *args, properties=properties, pattern_type=RelationshipPatternType.OUT)
+        return self.rel(value, *types, properties=properties, pattern_type=RelationshipPatternType.OUT)
 
 
 node = PatternElementBuilder.node

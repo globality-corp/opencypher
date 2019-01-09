@@ -6,19 +6,16 @@ from hamcrest import (
 
 from opencypher.api import (
     asc,
-    delete,
     match,
     node,
     parameters,
     properties,
-    ret,
 )
 
 
-class TestAPI:
-
-    def setup(self):
-        self.node = node(
+def test_api():
+    ast = match(
+        node(
             "foo",
             "Foo",
             properties=properties(
@@ -27,69 +24,40 @@ class TestAPI:
                     bar="baz",
                 ),
             ),
-        )
+        ).rel_in(
+            None,
+            "Bar",
+        ).node(
+            "baz",
+            "Baz",
+            properties=properties(
+                parameters(
+                    name_prefix="baz",
+                    bar="foo",
+                ),
+            ),
+        ),
+    ).delete(
+        "foo",
+        "baz",
+    ).ret(
+        "foo",
+        "baz",
+        order=asc("foo", "bar"),
+    )
 
-    def test_node(self):
-        assert_that(
-            str(self.node),
-            is_(equal_to("( foo :Foo { bar: $foo_bar } )")),
-        )
-
-    def test_rel(self):
-        assert_that(
-            str(self.node.rel("bar", "Bar").node("baz", "Baz")),
-            is_(equal_to("( foo :Foo { bar: $foo_bar } ) - [ bar :Bar ] - ( baz :Baz )")),
-        )
-
-    def test_rel_in(self):
-        assert_that(
-            str(self.node.rel_in("bar", "Bar").node("baz", "Baz")),
-            is_(equal_to("( foo :Foo { bar: $foo_bar } ) - [ bar :Bar ] -> ( baz :Baz )")),
-        )
-
-    def test_rel_out(self):
-        assert_that(
-            str(self.node.rel_out("bar", "Bar").node("baz", "Baz")),
-            is_(equal_to("( foo :Foo { bar: $foo_bar } ) <- [ bar :Bar ] - ( baz :Baz )")),
-        )
-
-    def test_delete(self):
-        query = delete("foo")
-        assert_that(
-            str(query),
-            is_(equal_to("DELETE foo")),
-        )
-
-    def test_ret(self):
-        query = ret("foo")
-        assert_that(
-            str(query),
-            is_(equal_to("RETURN foo")),
-        )
-
-    def test_ret_skip_limit(self):
-        query = ret("foo", skip=10, limit=20)
-        assert_that(
-            str(query),
-            is_(equal_to("RETURN foo SKIP 10 LIMIT 20")),
-        )
-
-    def test_ret_order(self):
-        query = ret("foo", order=asc("bar"))
-        assert_that(
-            str(query),
-            is_(equal_to("RETURN foo ORDER BY bar ASCENDING")),
-        )
-
-    def test_match(self):
-        query = match(self.node).ret("foo")
-        assert_that(
-            str(query),
-            is_(equal_to("MATCH ( foo :Foo { bar: $foo_bar } ) RETURN foo")),
-        )
-        assert_that(
-            dict(query),
-            is_(equal_to(dict(
-                foo_bar="baz")
-            )),
-        )
+    assert_that(
+        str(ast),
+        is_(equal_to(
+            "MATCH ( foo :Foo { bar: $foo_bar } ) - [ :Bar ] -> ( baz :Baz { bar: $baz_bar } ) "
+            "DELETE foo, baz "
+            "RETURN foo, baz ORDER BY foo ASCENDING, bar ASCENDING",
+        )),
+    )
+    assert_that(
+        dict(ast),
+        is_(equal_to(dict(
+            foo_bar="baz",
+            baz_bar="foo",
+        ))),
+    )
