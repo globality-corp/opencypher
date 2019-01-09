@@ -160,7 +160,7 @@ class CypherReadBuilder:
         )
 
 
-@dataclass
+@dataclass(frozen=True)
 class CypherBuilder:
     clause_factory: ClauseFactory = field(default_factory=ClauseFactory)
     return_factory: ReturnFactory = field(default_factory=ReturnFactory)

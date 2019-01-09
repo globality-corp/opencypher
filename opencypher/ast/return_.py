@@ -9,7 +9,7 @@ from opencypher.ast.paging import Limit, Skip
 from opencypher.ast.naming import Variable
 
 
-@dataclass
+@dataclass(frozen=True)
 class ExpressionAlias(Parameterized):
     """
     ReturnItem = (Expression, SP, (A,S), SP, Variable)
