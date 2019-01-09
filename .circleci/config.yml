@@ -14,7 +14,7 @@
 defaults: &defaults
   working_directory: ~/repo
   docker:
-    - image: ${AWS_ECR_DOMAIN}/globality-build:master
+    - image: ${AWS_ECR_DOMAIN}/globality-build:2019.01.1
       aws_auth:
         aws_access_key_id: ${AWS_ACCESS_KEY_ID}
         aws_secret_access_key: ${AWS_SECRET_ACCESS_KEY}
@@ -22,11 +22,13 @@ defaults: &defaults
         EXTRA_INDEX_URL: "InjectedDuringRuntime"
         AWS_ECR_DOMAIN: "InjectedDuringRuntime"
         JFROG_AUTH: "InjectedDuringRuntime"
+        PYPI_USERNAME: "InjectedDuringRuntime"
+        PYPI_PASSWORD: "InjectedDuringRuntime"
 
 deploy_defaults: &deploy_defaults
   working_directory: ~/repo
   docker:
-    - image: ${AWS_ECR_DOMAIN}/globality-build:master
+    - image: ${AWS_ECR_DOMAIN}/globality-build:2019.01.1
       aws_auth:
         aws_access_key_id: ${AWS_ACCESS_KEY_ID}
         aws_secret_access_key: ${AWS_SECRET_ACCESS_KEY}
@@ -34,6 +36,8 @@ deploy_defaults: &deploy_defaults
         EXTRA_INDEX_URL: "InjectedDuringRuntime"
         AWS_ECR_DOMAIN: "InjectedDuringRuntime"
         JFROG_AUTH: "InjectedDuringRuntime"
+        PYPI_USERNAME: "InjectedDuringRuntime"
+        PYPI_PASSWORD: "InjectedDuringRuntime"
 
 whitelist: &whitelist
   paths:
@@ -128,7 +132,17 @@ jobs:
       - run:
           name: Deploy
           command: |
-            echo "Not publishing package!"
+            echo "[distutils]" > ~/.pypirc
+            echo "index-servers =" >> ~/.pypirc
+            echo "    pypi " >> ~/.pypirc
+            echo >> ~/.pypirc
+            echo "[pypi]" >> ~/.pypirc
+            echo "repository:https://upload.pypi.org/legacy/" >> ~/.pypirc
+            echo "username:$PYPI_USERNAME" >> ~/.pypirc
+            echo "password:$PYPI_PASSWORD" >> ~/.pypirc
+            echo >> ~/.pypirc
+            python setup.py register -r pypi
+            python setup.py sdist upload -r pypi
 
 workflows:
   version: 2
@@ -178,3 +192,5 @@ workflows:
               ignore: /.*/
             tags:
               only: /^[0-9]+(\.[0-9]+)*/
+
+
