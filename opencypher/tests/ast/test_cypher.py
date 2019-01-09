@@ -8,12 +8,27 @@ from opencypher.ast import (
     Merge,
     NodePattern,
     NonEmptyList,
+    Pattern,
+    PatternElement,
     PatternPart,
     SinglePartReadQuery,
     SinglePartWriteQuery,
     Return,
     ReturnBody,
     ReturnItem,
+)
+
+
+MATCH = Match(
+    Pattern(
+        items=NonEmptyList[PatternPart](
+            PatternPart(
+                PatternElement(
+                    NodePattern(),
+                ),
+            ),
+        ),
+    ),
 )
 
 
@@ -24,7 +39,7 @@ from opencypher.ast import (
         dict(),
     ),
     (
-        Match(pattern=NodePattern()),
+        MATCH,
         "MATCH ( ) RETURN foo",
         dict(),
     ),
@@ -56,7 +71,7 @@ def test_read(reading_clause, query, parameters):
 
 @parameterized([
     (
-        "foo", Match(pattern=NodePattern()),
+        "foo", MATCH,
         "MATCH ( ) MERGE ( ) RETURN foo",
         dict(),
     ),
@@ -66,7 +81,7 @@ def test_read(reading_clause, query, parameters):
         dict(),
     ),
     (
-        None, Match(pattern=NodePattern()),
+        None, MATCH,
         "MATCH ( ) MERGE ( )",
         dict(),
     ),
