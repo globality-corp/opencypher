@@ -97,6 +97,18 @@ def test_create_set():
     )
 
 
+def test_create_union():
+    ast = create(node()).union_all(create(node()))
+    assert_that(
+        str(ast),
+        is_(equal_to("CREATE ( ) UNION ALL CREATE ( )")),
+    )
+    assert_that(
+        dict(ast),
+        is_(equal_to(dict())),
+    )
+
+
 def test_delete():
     ast = delete("foo")
     assert_that(
@@ -178,6 +190,35 @@ def test_match_set():
     assert_that(
         dict(ast),
         is_(equal_to(dict(foo="bar"))),
+    )
+
+
+def test_match_union():
+    ast = match(
+        node("foo", "Foo", {"bar": "baz"}),
+    ).ret("foo").union(
+        match(
+            node("bar", "Bar", {"foo": "baz"}),
+        ).ret(
+            "bar",
+        )
+    )
+    assert_that(
+        str(ast),
+        is_(equal_to(
+            "MATCH ( foo :Foo { bar: $foo_bar } ) "
+            "RETURN foo "
+            "UNION "
+            "MATCH ( bar :Bar { foo: $bar_foo } ) "
+            "RETURN bar",
+        )),
+    )
+    assert_that(
+        dict(ast),
+        is_(equal_to(dict(
+            foo_bar="baz",
+            bar_foo="baz",
+        ))),
     )
 
 

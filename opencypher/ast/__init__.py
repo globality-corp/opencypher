@@ -7,9 +7,11 @@ from opencypher.ast.create import (
 from opencypher.ast.cypher import (
     Cypher,
     ReadingClause,
+    RegularQuery,
     SinglePartReadQuery,
     SinglePartWriteQuery,
     UpdatingClause,
+    Union,
 )
 from opencypher.ast.delete import (
     Delete,
@@ -103,6 +105,7 @@ __all__ = [
     "Properties",
     "PropertyKeyName",
     "ReadingClause",
+    "RegularQuery",
     "RelationshipDetail",
     "RelationshipPattern",
     "RelationshipPatternType",
@@ -121,6 +124,7 @@ __all__ = [
     "SortOrder",
     "SymbolicName",
     "UpdatingClause",
+    "Union",
     "Variable",
     "Where",
 ]
