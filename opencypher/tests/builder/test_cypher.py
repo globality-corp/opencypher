@@ -21,7 +21,7 @@ def test_create():
     ast = create(node())
     assert_that(
         str(ast),
-        is_(equal_to("CREATE ( )")),
+        is_(equal_to("CREATE ()")),
     )
     assert_that(
         dict(ast),
@@ -33,7 +33,7 @@ def test_create_create():
     ast = create(node()).create(node())
     assert_that(
         str(ast),
-        is_(equal_to("CREATE ( ) CREATE ( )")),
+        is_(equal_to("CREATE () CREATE ()")),
     )
     assert_that(
         dict(ast),
@@ -45,7 +45,7 @@ def test_create_delete():
     ast = create(node()).delete("foo")
     assert_that(
         str(ast),
-        is_(equal_to("CREATE ( ) DELETE foo")),
+        is_(equal_to("CREATE () DELETE foo")),
     )
     assert_that(
         dict(ast),
@@ -57,7 +57,7 @@ def test_create_match():
     ast = create(node()).match(node())
     assert_that(
         str(ast),
-        is_(equal_to("MATCH ( ) CREATE ( )")),
+        is_(equal_to("MATCH () CREATE ()")),
     )
     assert_that(
         dict(ast),
@@ -69,7 +69,7 @@ def test_create_merge():
     ast = create(node()).merge(node())
     assert_that(
         str(ast),
-        is_(equal_to("CREATE ( ) MERGE ( )")),
+        is_(equal_to("CREATE () MERGE ()")),
     )
     assert_that(
         dict(ast),
@@ -81,7 +81,7 @@ def test_create_ret():
     ast = create(node()).ret("foo")
     assert_that(
         str(ast),
-        is_(equal_to("CREATE ( ) RETURN foo")),
+        is_(equal_to("CREATE () RETURN foo")),
     )
     assert_that(
         dict(ast),
@@ -93,7 +93,7 @@ def test_create_set():
     ast = create(node()).set(*parameters(foo="bar"))
     assert_that(
         str(ast),
-        is_(equal_to("CREATE ( ) SET foo = $foo")),
+        is_(equal_to("CREATE () SET foo = $foo")),
     )
     assert_that(
         dict(ast),
@@ -105,7 +105,7 @@ def test_create_union():
     ast = create(node()).union_all(create(node()))
     assert_that(
         str(ast),
-        is_(equal_to("CREATE ( ) UNION ALL CREATE ( )")),
+        is_(equal_to("CREATE () UNION ALL CREATE ()")),
     )
     assert_that(
         dict(ast),
@@ -129,7 +129,7 @@ def test_match():
     ast = match(node()).ret("foo")
     assert_that(
         str(ast),
-        is_(equal_to("MATCH ( ) RETURN foo")),
+        is_(equal_to("MATCH () RETURN foo")),
     )
     assert_that(
         dict(ast),
@@ -141,7 +141,7 @@ def test_match_create():
     ast = match(node()).create(node())
     assert_that(
         str(ast),
-        is_(equal_to("MATCH ( ) CREATE ( )")),
+        is_(equal_to("MATCH () CREATE ()")),
     )
     assert_that(
         dict(ast),
@@ -153,7 +153,7 @@ def test_match_delete():
     ast = match(node()).delete("foo")
     assert_that(
         str(ast),
-        is_(equal_to("MATCH ( ) DELETE foo")),
+        is_(equal_to("MATCH () DELETE foo")),
     )
     assert_that(
         dict(ast),
@@ -165,7 +165,7 @@ def test_match_match():
     ast = match(node()).match(node()).ret("foo")
     assert_that(
         str(ast),
-        is_(equal_to("MATCH ( ) MATCH ( ) RETURN foo")),
+        is_(equal_to("MATCH () MATCH () RETURN foo")),
     )
     assert_that(
         dict(ast),
@@ -177,7 +177,7 @@ def test_match_merge():
     ast = match(node()).merge(node())
     assert_that(
         str(ast),
-        is_(equal_to("MATCH ( ) MERGE ( )")),
+        is_(equal_to("MATCH () MERGE ()")),
     )
     assert_that(
         dict(ast),
@@ -189,7 +189,7 @@ def test_match_set():
     ast = match(node()).set(*parameters(foo="bar"))
     assert_that(
         str(ast),
-        is_(equal_to("MATCH ( ) SET foo = $foo")),
+        is_(equal_to("MATCH () SET foo = $foo")),
     )
     assert_that(
         dict(ast),
@@ -210,10 +210,10 @@ def test_match_union():
     assert_that(
         str(ast),
         is_(equal_to(
-            "MATCH ( foo :Foo { bar: $foo_bar } ) "
+            "MATCH (foo:Foo {bar: $foo_bar}) "
             "RETURN foo "
             "UNION "
-            "MATCH ( bar :Bar { foo: $bar_foo } ) "
+            "MATCH (bar:Bar {foo: $bar_foo}) "
             "RETURN bar",
         )),
     )
@@ -230,7 +230,7 @@ def test_merge():
     ast = merge(node())
     assert_that(
         str(ast),
-        is_(equal_to("MERGE ( )")),
+        is_(equal_to("MERGE ()")),
     )
     assert_that(
         dict(ast),
@@ -251,12 +251,12 @@ def test_merge():
     ),
     (
         ("foo", ":Bar"),
-        "REMOVE foo :Bar",
+        "REMOVE foo:Bar",
         dict(),
     ),
     (
         ("foo", ":Bar :Baz"),
-        "REMOVE foo :Bar :Baz",
+        "REMOVE foo:Bar:Baz",
         dict(),
     ),
 ])
@@ -312,7 +312,7 @@ def test_unwind_create():
     ast = unwind(expr("foo"), var("bar")).create(node())
     assert_that(
         str(ast),
-        is_(equal_to("UNWIND foo AS bar CREATE ( )")),
+        is_(equal_to("UNWIND foo AS bar CREATE ()")),
     )
     assert_that(
         dict(ast),

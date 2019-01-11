@@ -21,9 +21,10 @@ from opencypher.ast import (
             Variable("foo"),
             NodeLabels(
                 NodeLabel("Bar"),
+                NodeLabel("Baz"),
             ),
         ),
-        "REMOVE foo :Bar",
+        "REMOVE foo:Bar:Baz",
         dict(),
     ),
     (

@@ -21,7 +21,7 @@ class RemoveItem(Parameterized):
         if isinstance(self.value, PropertyExpression):
             return str(self.value)
         else:
-            return f"{str(self.value[0])} {str_join(self.value[1])}"
+            return f"{str(self.value[0])}{str_join(self.value[1], '')}"
 
     def iter_parameters(self) -> Iterable[Parameter]:
         if isinstance(self.value, PropertyExpression):

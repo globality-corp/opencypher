@@ -9,7 +9,7 @@ def test_node():
 
     assert_that(
         str(ast),
-        is_(equal_to("( )")),
+        is_(equal_to("()")),
     )
     assert_that(
         dict(ast),
@@ -20,22 +20,22 @@ def test_node():
 @parameterized([
     (
         None,
-        "( ) - [ ] - ( )",
+        "()-[]-()",
         dict(),
     ),
     (
         (),
-        "( ) - [ * ] - ( )",
+        "()-[*]-()",
         dict(),
     ),
     (
         (1, ),
-        "( ) - [ * 1 ] - ( )",
+        "()-[*1]-()",
         dict(),
     ),
     (
         (1, 2),
-        "( ) - [ * 1 .. 2 ] - ( )",
+        "()-[*1..2]-()",
         dict(),
     ),
 ])
@@ -57,7 +57,7 @@ def test_rel_in():
 
     assert_that(
         str(ast),
-        is_(equal_to("( ) - [ ] -> ( )")),
+        is_(equal_to("()-[]->()")),
     )
     assert_that(
         dict(ast),
@@ -70,7 +70,7 @@ def test_rel_out():
 
     assert_that(
         str(ast),
-        is_(equal_to("( ) <- [ ] - ( )")),
+        is_(equal_to("()<-[]-()")),
     )
     assert_that(
         dict(ast),

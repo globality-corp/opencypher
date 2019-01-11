@@ -1,27 +1,7 @@
 from dataclasses import dataclass
 from typing import Iterable, Union
 
-from opencypher.ast.collection import NonEmptySequence
-from opencypher.ast.formatting import str_join
-from opencypher.ast.naming import FunctionName
 from opencypher.ast.parameter import Parameter, Parameterized
-
-
-@dataclass(frozen=True)
-class FunctionInvocation(Parameterized):
-    """
-    FunctionInvocation = FunctionName, [SP], '(', [SP], [(D,I,S,T,I,N,C,T), [SP]], [Expression, [SP], { ',', [SP], Expression, [SP] }], ')' ;  # noqa: E501
-
-    """
-    name: FunctionName
-    expressions: NonEmptySequence["Expression"]
-    distinct: bool = False
-
-    def __str__(self) -> str:
-        if self.distinct:
-            return f"{self.name}( DISTINCT {str_join(self.expressions)} )"
-        else:
-            return f"{self.name}( {str_join(self.expressions)} )"
 
 
 """
@@ -61,7 +41,7 @@ Atom = Literal
 # omitting many things here
 Atom = Union[
     Literal,
-    FunctionInvocation,
+    "FunctionInvocation",  # type: ignore
     Parameter,
 ]
 
@@ -98,8 +78,5 @@ class Expression(Parameterized):
         return str(self.value)
 
     def iter_parameters(self) -> Iterable[Parameter]:
-        if isinstance(self.value, FunctionInvocation):
-            for expression in self.value.expressions:
-                yield from expression.iter_parameters()
-        elif isinstance(self.value, Parameter):
+        if isinstance(self.value, Parameterized):
             yield from self.value.iter_parameters()

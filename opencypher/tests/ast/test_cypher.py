@@ -42,7 +42,7 @@ MATCH = Match(
     ),
     (
         MATCH,
-        "MATCH ( ) RETURN foo",
+        "MATCH () RETURN foo",
         dict(),
     ),
 ])
@@ -76,22 +76,22 @@ def test_read(reading_clause, query, parameters):
 @parameterized([
     (
         "foo", MATCH,
-        "MATCH ( ) MERGE ( ) RETURN foo",
+        "MATCH () MERGE () RETURN foo",
         dict(),
     ),
     (
         "foo", None,
-        "MERGE ( ) RETURN foo",
+        "MERGE () RETURN foo",
         dict(),
     ),
     (
         None, MATCH,
-        "MATCH ( ) MERGE ( )",
+        "MATCH () MERGE ()",
         dict(),
     ),
     (
         None, None,
-        "MERGE ( )",
+        "MERGE ()",
         dict(),
     ),
 ])

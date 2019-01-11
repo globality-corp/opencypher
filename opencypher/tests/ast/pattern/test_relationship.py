@@ -16,10 +16,10 @@ from opencypher.ast import (
 
 @parameterized([
     (
-        1, 2, "* 1 .. 2",
+        1, 2, "*1..2",
     ),
     (
-        1, None, "* 1",
+        1, None, "*1",
     ),
     (
         None, None, "*",
@@ -36,52 +36,52 @@ def test_range_literal(start, end, query):
 @parameterized([
     (
         "foo", ["Bar"], (1, 2), dict(this="that"),
-        "[ foo :Bar * 1 .. 2 { this: $this } ]",
+        "[foo :Bar *1..2 {this: $this}]",
         dict(this="that"),
     ),
     (
         "foo", ["Bar"], None, dict(this="that"),
-        "[ foo :Bar { this: $this } ]",
+        "[foo :Bar {this: $this}]",
         dict(this="that"),
     ),
     (
         None, ["Bar", "Baz"], None, dict(this="that"),
-        "[ :Bar|:Baz { this: $this } ]",
+        "[:Bar|:Baz {this: $this}]",
         dict(this="that"),
     ),
     (
         "foo", None, None, dict(this="that"),
-        "[ foo { this: $this } ]",
+        "[foo {this: $this}]",
         dict(this="that"),
     ),
     (
         "foo", ["Bar"], None, None,
-        "[ foo :Bar ]",
+        "[foo :Bar]",
         dict(),
     ),
     (
         "foo", None, None, None,
-        "[ foo ]",
+        "[foo]",
         dict(),
     ),
     (
         None, ["Bar"], None, None,
-        "[ :Bar ]",
+        "[:Bar]",
         dict(),
     ),
     (
         None, None, (1, 2), None,
-        "[ * 1 .. 2 ]",
+        "[*1..2]",
         dict(),
     ),
     (
         None, None, None, dict(this="that"),
-        "[ { this: $this } ]",
+        "[{this: $this}]",
         dict(this="that"),
     ),
     (
         None, None, None, None,
-        "[ ]",
+        "[]",
         dict(),
     ),
 ])
@@ -117,29 +117,57 @@ def test_relationship_detail(variable, types, length, properties, query, paramet
 @parameterized([
     (
         RelationshipPatternType.BOTH,
-        "<- [ ] ->",
+        RelationshipDetail(),
+        "<-[]->",
+        dict(),
+    ),
+    (
+        RelationshipPatternType.BOTH,
+        None,
+        "<-->",
         dict(),
     ),
     (
         RelationshipPatternType.IN,
-        "- [ ] ->",
+        RelationshipDetail(),
+        "-[]->",
+        dict(),
+    ),
+    (
+        RelationshipPatternType.IN,
+        None,
+        "-->",
         dict(),
     ),
     (
         RelationshipPatternType.NONE,
-        "- [ ] -",
+        RelationshipDetail(),
+        "-[]-",
+        dict(),
+    ),
+    (
+        RelationshipPatternType.NONE,
+        None,
+        "--",
         dict(),
     ),
     (
         RelationshipPatternType.OUT,
-        "<- [ ] -",
+        RelationshipDetail(),
+        "<-[]-",
+        dict(),
+    ),
+    (
+        RelationshipPatternType.OUT,
+        None,
+        "<--",
         dict(),
     ),
 ])
-def test_relationship_pattern(pattern_type, query, parameters):
+def test_relationship_pattern(pattern_type, detail, query, parameters):
     ast = RelationshipPattern(
         pattern_type=pattern_type,
-        detail=RelationshipDetail(),
+        detail=detail,
     )
     assert_that(
         str(ast),

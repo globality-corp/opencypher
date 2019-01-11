@@ -19,7 +19,7 @@ class PatternElementChain(Parameterized):
     node_pattern: NodePattern = field(default_factory=NodePattern)
 
     def __str__(self) -> str:
-        return f"{str(self.relationship_pattern)} {str(self.node_pattern)}"
+        return f"{str(self.relationship_pattern)}{str(self.node_pattern)}"
 
     def iter_parameters(self) -> Iterable[Parameter]:
         yield from self.relationship_pattern.iter_parameters()
@@ -40,7 +40,7 @@ class PatternElement(Parameterized):
     def __str__(self) -> str:
         # omitted: parenthesis wrapping
         if self.items:
-            return f"{str(self.node_pattern)} {str_join(self.items)}"
+            return f"{str(self.node_pattern)}{str_join(self.items, '')}"
         else:
             return f"{str(self.node_pattern)}"
 
