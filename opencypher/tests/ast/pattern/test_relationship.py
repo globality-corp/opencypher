@@ -3,6 +3,7 @@ from parameterized import parameterized
 
 from opencypher.ast import (
     MapLiteral,
+    RangeLiteral,
     RelationshipDetail,
     RelationshipPattern,
     RelationshipPatternType,
@@ -15,47 +16,76 @@ from opencypher.ast import (
 
 @parameterized([
     (
-        "foo", ["Bar"], dict(this="that"),
+        1, 2, "* 1 .. 2",
+    ),
+    (
+        1, None, "* 1",
+    ),
+    (
+        None, None, "*",
+    ),
+])
+def test_range_literal(start, end, query):
+    ast = RangeLiteral(start, end)
+    assert_that(
+        str(ast),
+        is_(equal_to(query)),
+    )
+
+
+@parameterized([
+    (
+        "foo", ["Bar"], (1, 2), dict(this="that"),
+        "[ foo :Bar * 1 .. 2 { this: $this } ]",
+        dict(this="that"),
+    ),
+    (
+        "foo", ["Bar"], None, dict(this="that"),
         "[ foo :Bar { this: $this } ]",
         dict(this="that"),
     ),
     (
-        None, ["Bar", "Baz"], dict(this="that"),
+        None, ["Bar", "Baz"], None, dict(this="that"),
         "[ :Bar|:Baz { this: $this } ]",
         dict(this="that"),
     ),
     (
-        "foo", None, dict(this="that"),
+        "foo", None, None, dict(this="that"),
         "[ foo { this: $this } ]",
         dict(this="that"),
     ),
     (
-        "foo", ["Bar"], None,
+        "foo", ["Bar"], None, None,
         "[ foo :Bar ]",
         dict(),
     ),
     (
-        "foo", None, None,
+        "foo", None, None, None,
         "[ foo ]",
         dict(),
     ),
     (
-        None, ["Bar"], None,
+        None, ["Bar"], None, None,
         "[ :Bar ]",
         dict(),
     ),
     (
-        None, None, dict(this="that"),
+        None, None, (1, 2), None,
+        "[ * 1 .. 2 ]",
+        dict(),
+    ),
+    (
+        None, None, None, dict(this="that"),
         "[ { this: $this } ]",
         dict(this="that"),
     ),
     (
-        None, None, None,
+        None, None, None, None,
         "[ ]",
         dict(),
     ),
 ])
-def test_relationship_detail(variable, types, properties, query, parameters):
+def test_relationship_detail(variable, types, length, properties, query, parameters):
     ast = RelationshipDetail(
         variable=Variable(variable) if variable is not None else None,
         types=NonEmptySequence[RelTypeName](
@@ -65,6 +95,10 @@ def test_relationship_detail(variable, types, properties, query, parameters):
                 for type_ in types[1:]
             ),
         ) if types else None,
+        length=RangeLiteral(
+            start=length[0],
+            end=length[1],
+        ) if length else None,
         properties=MapLiteral([
             (key, Parameter(key, key, value))
             for key, value in properties.items()

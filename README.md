@@ -72,7 +72,6 @@ Some compromises have been made with respect to the completeness of the AST:
 
  3. Several supported features are partially implemented:
 
-     -  Relationship patterns cannot yet express range literals.
      -  `SET` clauses can only express simple variable assigngment.
      -  Parameters do not support numeric values (`$1`); symbolic names (`$foo`) *are* supported.
 

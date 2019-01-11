@@ -3,7 +3,7 @@ Pattern building.
 
 """
 from dataclasses import dataclass
-from typing import Mapping, Optional, Sequence, Union
+from typing import Mapping, Optional, Sequence, Tuple, Union
 
 from opencypher.ast import (
     MapLiteral,
@@ -12,6 +12,7 @@ from opencypher.ast import (
     NonEmptySequence,
     PatternElement,
     PatternElementChain,
+    RangeLiteral,
     RelationshipPattern,
     RelationshipPatternType,
     RelationshipDetail,
@@ -88,6 +89,7 @@ class PatternElementBuilder(PatternElement):
             variable: Optional[str] = None,
             types: Optional[Union[str, Sequence[str]]] = None,
             properties: Optional[Union[MapLiteral, Mapping[str, str]]] = None,
+            length: Optional[Union[Tuple, Tuple[int], Tuple[int, int]]] = None,
             pattern_type=RelationshipPatternType.NONE) -> RelationshipDetailBuilder:
 
         if isinstance(types, str):
@@ -113,6 +115,10 @@ class PatternElementBuilder(PatternElement):
                             for type_ in types[1:]
                         ),
                     ) if types else None,
+                    length=RangeLiteral(
+                        start=length[0] if len(length) > 0 else None,
+                        end=length[1] if len(length) > 1 else None,
+                    ) if length is not None else None,
                     properties=properties,
                 ),
                 pattern_type=pattern_type,
@@ -122,11 +128,13 @@ class PatternElementBuilder(PatternElement):
     def rel_in(self,
                variable: Optional[str] = None,
                types: Optional[Union[str, Sequence[str]]] = None,
-               properties: Optional[Union[MapLiteral, Mapping[str, str]]] = None) -> RelationshipDetailBuilder:
+               properties: Optional[Union[MapLiteral, Mapping[str, str]]] = None,
+               length: Optional[Union[Tuple, Tuple[int], Tuple[int, int]]] = None) -> RelationshipDetailBuilder:
 
         return self.rel(
             variable=variable,
             types=types,
+            length=length,
             properties=properties,
             pattern_type=RelationshipPatternType.IN,
         )
@@ -134,11 +142,13 @@ class PatternElementBuilder(PatternElement):
     def rel_out(self,
                 variable: Optional[str] = None,
                 types: Optional[Union[str, Sequence[str]]] = None,
-                properties: Optional[Union[MapLiteral, Mapping[str, str]]] = None) -> RelationshipDetailBuilder:
+                properties: Optional[Union[MapLiteral, Mapping[str, str]]] = None,
+                length: Optional[Union[Tuple[int], Tuple[int, int]]] = None) -> RelationshipDetailBuilder:
 
         return self.rel(
             variable=variable,
             types=types,
+            length=length,
             properties=properties,
             pattern_type=RelationshipPatternType.OUT,
         )

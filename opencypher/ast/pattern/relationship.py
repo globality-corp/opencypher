@@ -1,11 +1,29 @@
 from dataclasses import dataclass, field
 from enum import Enum, unique
-from typing import Iterable, Optional, Union
+from typing import Any, Callable, Iterable, Optional, Union
 
 from opencypher.ast.expression import Parameter, Parameterized
 from opencypher.ast.formatting import str_join
 from opencypher.ast.naming import RelationshipTypes, Variable
 from opencypher.ast.properties import Properties
+
+
+@dataclass(frozen=True)
+class RangeLiteral:
+    """
+    RangeLiteral = '*', [SP], [IntegerLiteral, [SP]], ['..', [SP], [IntegerLiteral, [SP]]] ;
+
+    """
+    start: Optional[int] = None
+    end: Optional[int] = None
+
+    def __str__(self) -> str:
+        if self.start is None:
+            return "*"
+        elif self.end is None:
+            return f"* {self.start}"
+        else:
+            return f"* {self.start} .. {self.end}"
 
 
 @dataclass(frozen=True)
@@ -16,32 +34,23 @@ class RelationshipDetail(Parameterized):
     """
     variable: Optional[Variable] = None
     types: Optional[RelationshipTypes] = None
-    # omitted: range_literal
+    length: Optional[RangeLiteral] = None
     properties: Optional[Properties] = None
 
     def __str__(self) -> str:
-        if self.variable is not None:
-            if self.types is not None:
-                if self.properties is not None:
-                    return f"[ {str(self.variable)} {str_join(self.types, '|')} {str(self.properties)} ]"
-                else:
-                    return f"[ {str(self.variable)} {str_join(self.types, '|')} ]"
-            else:
-                if self.properties is not None:
-                    return f"[ {str(self.variable)} {str(self.properties)} ]"
-                else:
-                    return f"[ {str(self.variable)} ]"
+        terms = [self.variable, self.types, self.length, self.properties]
+        funcs: Iterable[Callable[[Any], str]] = [str, lambda items: str_join(items, "|"), str, str]
+
+        values = [
+            func(term)
+            for term, func in zip(terms, funcs)
+            if term is not None
+        ]
+
+        if values:
+            return f"[ {' '.join(values)} ]"
         else:
-            if self.types is not None:
-                if self.properties is not None:
-                    return f"[ {str_join(self.types, '|')} {str(self.properties)} ]"
-                else:
-                    return f"[ {str_join(self.types, '|')} ]"
-            else:
-                if self.properties is not None:
-                    return f"[ {str(self.properties)} ]"
-                else:
-                    return f"[ ]"
+            return "[ ]"
 
     def iter_parameters(self) -> Iterable[Parameter]:
         if self.properties is not None:

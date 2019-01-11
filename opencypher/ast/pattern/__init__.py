@@ -8,6 +8,7 @@ from opencypher.ast.pattern.node import (
    NodePattern,
 )
 from opencypher.ast.pattern.relationship import (
+    RangeLiteral,
     RelationshipDetail,
     RelationshipPattern,
     RelationshipPatternType,
@@ -20,6 +21,7 @@ __all__ = [
     "PatternElementChain",
     "PatternPart",
     "NodePattern",
+    "RangeLiteral",
     "RelationshipDetail",
     "RelationshipPattern",
     "RelationshipPatternType",
