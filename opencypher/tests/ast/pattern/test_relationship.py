@@ -36,22 +36,22 @@ def test_range_literal(start, end, query):
 @parameterized([
     (
         "foo", ["Bar"], (1, 2), dict(this="that"),
-        "[ foo :Bar * 1 .. 2 { this: $this } ]",
+        "[ foo :Bar * 1 .. 2 {this: $this} ]",
         dict(this="that"),
     ),
     (
         "foo", ["Bar"], None, dict(this="that"),
-        "[ foo :Bar { this: $this } ]",
+        "[ foo :Bar {this: $this} ]",
         dict(this="that"),
     ),
     (
         None, ["Bar", "Baz"], None, dict(this="that"),
-        "[ :Bar|:Baz { this: $this } ]",
+        "[ :Bar|:Baz {this: $this} ]",
         dict(this="that"),
     ),
     (
         "foo", None, None, dict(this="that"),
-        "[ foo { this: $this } ]",
+        "[ foo {this: $this} ]",
         dict(this="that"),
     ),
     (
@@ -76,7 +76,7 @@ def test_range_literal(start, end, query):
     ),
     (
         None, None, None, dict(this="that"),
-        "[ { this: $this } ]",
+        "[ {this: $this} ]",
         dict(this="that"),
     ),
     (

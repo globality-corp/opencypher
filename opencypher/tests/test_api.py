@@ -49,7 +49,7 @@ def test_api():
     assert_that(
         str(ast),
         is_(equal_to(
-            "MATCH ( foo :Foo { bar: $foo_bar } ) - [ :Bar ] -> ( baz :Baz { bar: $baz_bar } ) "
+            "MATCH ( foo :Foo {bar: $foo_bar} ) - [ :Bar ] -> ( baz :Baz {bar: $baz_bar} ) "
             "DELETE foo, baz "
             "RETURN foo, baz ORDER BY foo ASCENDING, bar ASCENDING",
         )),
@@ -92,8 +92,8 @@ def test_readme_update():
     assert_that(
         str(query),
         is_(equal_to(
-            "MATCH ( alice :Person { name: $alice_name } ) "
-            "MATCH ( bob :Person { name: $bob_name } ) "
+            "MATCH ( alice :Person {name: $alice_name} ) "
+            "MATCH ( bob :Person {name: $bob_name} ) "
             "MERGE ( bob ) - [ :IsFriendsWith ] -> ( alice ) "
             "MERGE ( alice ) - [ :IsFriendsWith ] -> ( bob )"
         )),

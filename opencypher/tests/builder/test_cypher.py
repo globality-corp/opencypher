@@ -210,10 +210,10 @@ def test_match_union():
     assert_that(
         str(ast),
         is_(equal_to(
-            "MATCH ( foo :Foo { bar: $foo_bar } ) "
+            "MATCH ( foo :Foo {bar: $foo_bar} ) "
             "RETURN foo "
             "UNION "
-            "MATCH ( bar :Bar { foo: $bar_foo } ) "
+            "MATCH ( bar :Bar {foo: $bar_foo} ) "
             "RETURN bar",
         )),
     )

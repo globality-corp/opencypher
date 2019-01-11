@@ -14,17 +14,17 @@ from opencypher.ast import (
 @parameterized([
     (
         "foo", ["Bar"], dict(this="that"),
-        "( foo :Bar { this: $this } )",
+        "( foo :Bar {this: $this} )",
         dict(this="that"),
     ),
     (
         None, ["Bar", "Baz"], dict(this="that"),
-        "( :Bar :Baz { this: $this } )",
+        "( :Bar :Baz {this: $this} )",
         dict(this="that"),
     ),
     (
         "foo", None, dict(this="that"),
-        "( foo { this: $this } )",
+        "( foo {this: $this} )",
         dict(this="that"),
     ),
     (
@@ -44,7 +44,7 @@ from opencypher.ast import (
     ),
     (
         None, None, dict(this="that"),
-        "( { this: $this } )",
+        "( {this: $this} )",
         dict(this="that"),
     ),
     (
