@@ -25,3 +25,10 @@ class NonEmptySequence(Generic[T], Sequence[T]):
         if isinstance(idx, slice):
             raise TypeError
         return self.items[idx]
+
+    def __add__(self, values: Sequence[T]) -> "NonEmptySequence[T]":
+        return NonEmptySequence[T](
+            self.items[0],
+            *self.items[1:],
+            *values,
+        )
