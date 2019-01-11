@@ -69,7 +69,6 @@ Some compromises have been made with respect to the completeness of the AST:
      -  `REMOVE`
      -  `UNWIND`
      -  `CALL`
-     -  `UNION`
      -  `WITH`
 
  3. Several supported features are partially implemented:
