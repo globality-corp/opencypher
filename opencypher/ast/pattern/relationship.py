@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum, unique
-from typing import Any, Callable, Iterable, Optional, Union
+from typing import Iterable, Optional, Union
 
 from opencypher.ast.expression import Parameter, Parameterized
 from opencypher.ast.formatting import str_join
@@ -38,6 +38,7 @@ class RelationshipDetail(Parameterized):
     properties: Optional[Properties] = None
 
     def __str__(self) -> str:
+        prefix: Optional[str]
         if self.variable:
             if self.types:
                 prefix = f"{str(self.variable)}{str_join(self.types, '|')}"

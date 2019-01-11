@@ -20,6 +20,8 @@ from opencypher.ast import (
     RemoveItems,
     Set,
     SetItem,
+    SetItems,
+    SetVariableItem,
     Variable,
     Unwind,
 )
@@ -115,15 +117,15 @@ class ClauseFactory:
 
     @classmethod
     def set_item(cls, parameter: Parameter) -> SetItem:
-        return SetItem(
-            variable=Variable(parameter.key),
-            expression=expr(parameter),
+        return SetVariableItem(
+            target=Variable(parameter.key),
+            value=expr(parameter),
         )
 
     @classmethod
     def set(cls, parameter: Parameter, *parameters: Parameter) -> Set:
         return Set(
-            items=NonEmptySequence[SetItem](
+            items=SetItems(
                 cls.set_item(parameter),
                 *(
                     cls.set_item(item)

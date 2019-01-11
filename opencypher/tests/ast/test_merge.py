@@ -6,10 +6,10 @@ from opencypher.ast import (
     Merge,
     MergeAction,
     MergeActionType,
-    NonEmptySequence,
     PatternPart,
     Set,
-    SetItem,
+    SetItems,
+    SetVariableItem,
 )
 
 
@@ -42,17 +42,17 @@ from opencypher.ast import (
         dict(),
     ),
 ])
-def test_match(action_types, query, parameters):
+def test_merge(action_types, query, parameters):
     ast = Merge(
         pattern_part=PatternPart(),
         actions=[
             MergeAction(
                 action_type=action_type,
                 then=Set(
-                    items=NonEmptySequence[SetItem](
-                        SetItem(
-                            variable="foo",
-                            expression=Expression("bar"),
+                    items=SetItems(
+                        SetVariableItem(
+                            target="foo",
+                            value=Expression("bar"),
                         ),
                     ),
                 ),

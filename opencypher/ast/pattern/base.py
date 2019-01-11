@@ -38,7 +38,6 @@ class PatternElement(Parameterized):
     items: Optional[Sequence[PatternElementChain]] = None
 
     def __str__(self) -> str:
-        # omitted: parenthesis wrapping
         if self.items:
             return f"{str(self.node_pattern)}{str_join(self.items, '')}"
         else:

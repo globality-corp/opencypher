@@ -91,6 +91,10 @@ from opencypher.ast.return_ import (
 from opencypher.ast.set import (
     Set,
     SetItem,
+    SetItems,
+    SetPropertyItem,
+    SetVariableItem,
+    SetVariableNodeLabelsItem,
 )
 from opencypher.ast.unwind import (
     Unwind,
@@ -144,6 +148,10 @@ __all__ = [
     "SchemaName",
     "Set",
     "SetItem",
+    "SetItems",
+    "SetPropertyItem",
+    "SetVariableItem",
+    "SetVariableNodeLabelsItem",
     "SinglePartReadQuery",
     "SinglePartWriteQuery",
     "Skip",

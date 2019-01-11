@@ -64,15 +64,15 @@ Some compromises have been made with respect to the completeness of the AST:
     and reduces to `str` in many cases. The expression grammar is likely to get more complete
     over time.
 
- 2. Several top level query clauses are not yet implemented, including:
+ 2. Some forms of argumementation (e.g. `Set` items) are not easy to construct using the builder
+    API (although these remain available within the AST).
+
+ 3. Several top level query clauses are not yet implemented, including:
 
      -  `CALL`
      -  `WITH`
 
- 3. Several supported features are partially implemented:
-
-     -  `SET` clauses can only express simple variable assigngment.
-     -  Parameters do not support numeric values (`$1`); symbolic names (`$foo`) *are* supported.
-
  4. Parameters do not automatically generate unique identifiers/prefixes. Parameter names will be
     derived from variable names where known, but no fallback exists yet for anonyomous pattern terms.
+
+ 5. Parameters do not support numeric values (`$1`); symbolic names (`$foo`) *are* supported.
