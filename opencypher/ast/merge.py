@@ -2,8 +2,8 @@ from dataclasses import dataclass
 from enum import Enum, unique
 from typing import Iterable, Optional, Sequence
 
-from opencypher.ast.expression import Parameter, Parameterized
 from opencypher.ast.formatting import str_join
+from opencypher.ast.parameter import Parameter, Parameterized
 from opencypher.ast.pattern import PatternPart
 from opencypher.ast.set import Set
 

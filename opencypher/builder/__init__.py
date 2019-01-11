@@ -12,6 +12,7 @@ create = cypher().create
 delete = cypher().delete
 match = cypher().match
 merge = cypher().merge
+remove = cypher().remove
 ret = cypher().ret
 set = cypher().set
 unwind = cypher().unwind
@@ -31,6 +32,7 @@ __all__ = [
     "order",
     "parameters",
     "properties",
+    "remove",
     "ret",
     "set",
     "unwind",

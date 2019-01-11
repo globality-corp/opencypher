@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from typing import Iterable, Optional
 
-from opencypher.ast.expression import Expression, Parameter, Parameterized
+from opencypher.ast.expression import Expression
+from opencypher.ast.parameter import Parameter, Parameterized
 from opencypher.ast.pattern import Pattern
 
 

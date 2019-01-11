@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import cast, Optional, Sequence
+from typing import cast, Optional, Sequence, Tuple
 
 from opencypher.ast import (
     NonEmptySequence,
@@ -73,6 +73,18 @@ class CypherWriteBuilder(CypherUnionBuilder):
         updating_clause = self.clause_factory.merge(pattern_element)
 
         return self.make(
+            updating_clauses=query.updating_clauses + (updating_clause, ),
+            reading_clauses=query.reading_clauses,
+            return_=None,
+            clause_factory=self.clause_factory,
+            return_factory=self.return_factory,
+        )
+
+    def remove(self, target: Tuple[str, str], *targets: Tuple[str, str]) -> "CypherWriteBuilder":
+        query = cast(SinglePartWriteQuery, self.statement.query)
+        updating_clause = self.clause_factory.remove(target, *targets)
+
+        return CypherWriteBuilder.make(
             updating_clauses=query.updating_clauses + (updating_clause, ),
             reading_clauses=query.reading_clauses,
             return_=None,

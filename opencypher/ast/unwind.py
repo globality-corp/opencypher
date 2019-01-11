@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 from typing import Iterable
 
-from opencypher.ast.expression import Expression, Parameter, Parameterized
+from opencypher.ast.expression import Expression
 from opencypher.ast.naming import Variable
+from opencypher.ast.parameter import Parameter, Parameterized
 
 
 @dataclass(frozen=True)

@@ -4,14 +4,12 @@ from opencypher.ast.collection import (
 from opencypher.ast.create import (
     Create,
 )
+from opencypher.ast.clause import (
+    ReadingClause,
+    UpdatingClause,
+)
 from opencypher.ast.cypher import (
     Cypher,
-    ReadingClause,
-    RegularQuery,
-    SinglePartReadQuery,
-    SinglePartWriteQuery,
-    UpdatingClause,
-    Union,
 )
 from opencypher.ast.delete import (
     Delete,
@@ -19,7 +17,6 @@ from opencypher.ast.delete import (
 from opencypher.ast.expression import (
     Expression,
     FunctionInvocation,
-    Parameter,
 )
 from opencypher.ast.match import (
     Match,
@@ -62,9 +59,26 @@ from opencypher.ast.pattern import (
     RelationshipPattern,
     RelationshipPatternType,
 )
+from opencypher.ast.parameter import (
+    Parameter,
+)
 from opencypher.ast.properties import (
     MapLiteral,
+    PropertyExpression,
+    PropertyLookup,
     Properties,
+)
+from opencypher.ast.query import (
+    Query,
+    RegularQuery,
+    SinglePartReadQuery,
+    SinglePartWriteQuery,
+    Union,
+)
+from opencypher.ast.remove import (
+    Remove,
+    RemoveItem,
+    RemoveItems,
 )
 from opencypher.ast.return_ import (
     ExpressionAlias,
@@ -106,8 +120,11 @@ __all__ = [
     "PatternElement",
     "PatternElementChain",
     "PatternPart",
+    "PropertyExpression",
+    "PropertyLookup",
     "Properties",
     "PropertyKeyName",
+    "Query",
     "RangeLiteral",
     "ReadingClause",
     "RegularQuery",
@@ -116,6 +133,9 @@ __all__ = [
     "RelationshipPatternType",
     "RelTypeName",
     "RelationshipTypes",
+    "Remove",
+    "RemoveItem",
+    "RemoveItems",
     "ReturnBody",
     "Return",
     "ReturnItem",

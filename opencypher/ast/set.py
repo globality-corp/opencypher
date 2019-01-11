@@ -2,19 +2,20 @@ from dataclasses import dataclass
 from typing import Iterable
 
 from opencypher.ast.collection import NonEmptySequence
-from opencypher.ast.expression import Expression, Parameter
+from opencypher.ast.expression import Expression
 from opencypher.ast.formatting import str_join
 from opencypher.ast.naming import Variable
+from opencypher.ast.parameter import Parameter
 
 
 @dataclass(frozen=True)
 class SetItem:
     """
     SetItem = (PropertyExpression, [SP], '=', [SP], Expression)
-        | (Variable, [SP], '=', [SP], Expression)
-        | (Variable, [SP], '+=', [SP], Expression)
-        | (Variable, [SP], NodeLabels)
-        ;
+            | (Variable, [SP], '=', [SP], Expression)
+            | (Variable, [SP], '+=', [SP], Expression)
+            | (Variable, [SP], NodeLabels)
+            ;
 
     """
     # omitted: PropertyExpression

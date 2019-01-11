@@ -1,4 +1,5 @@
 from hamcrest import assert_that, equal_to, is_
+from parameterized import parameterized
 
 from opencypher.builder import (
     create,
@@ -8,6 +9,7 @@ from opencypher.builder import (
     merge,
     node,
     parameters,
+    remove,
     ret,
     set,
     unwind,
@@ -233,6 +235,40 @@ def test_merge():
     assert_that(
         dict(ast),
         is_(equal_to(dict())),
+    )
+
+
+@parameterized([
+    (
+        ("foo", "bar"),
+        "REMOVE foo . bar",
+        dict(),
+    ),
+    (
+        ("foo", "bar.baz"),
+        "REMOVE foo . bar . baz",
+        dict(),
+    ),
+    (
+        ("foo", ":Bar"),
+        "REMOVE foo :Bar",
+        dict(),
+    ),
+    (
+        ("foo", ":Bar :Baz"),
+        "REMOVE foo :Bar :Baz",
+        dict(),
+    ),
+])
+def test_remove(target, query, parameters):
+    ast = remove(target)
+    assert_that(
+        str(ast),
+        is_(equal_to(query)),
+    )
+    assert_that(
+        dict(ast),
+        is_(equal_to(parameters)),
     )
 
 

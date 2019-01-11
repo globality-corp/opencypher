@@ -1,8 +1,40 @@
+from dataclasses import dataclass
 from typing import Iterable, Tuple, Union
 
-from opencypher.ast.expression import Expression, Parameter
+from opencypher.ast.collection import NonEmptySequence
+from opencypher.ast.expression import Atom, Expression
 from opencypher.ast.formatting import str_join
 from opencypher.ast.naming import PropertyKeyName
+from opencypher.ast.parameter import Parameter, Parameterized
+
+
+@dataclass(frozen=True)
+class PropertyLookup:
+    """
+    PropertyLookup = . PropertyKeyName
+
+    """
+    value: PropertyKeyName
+
+    def __str__(self) -> str:
+        return f". {self.value}"
+
+
+@dataclass(frozen=True)
+class PropertyExpression(Parameterized):
+    """
+    PropertyExpression = Atom PropertyLookup+
+
+    """
+    value: Atom
+    properties: NonEmptySequence[PropertyLookup]
+
+    def __str__(self) -> str:
+        return f"{self.value} {str_join(self.properties)}"
+
+    def iter_parameters(self) -> Iterable[Parameter]:
+        if isinstance(self.value, Parameter):
+            yield from self.value.iter_parameters()
 
 
 class MapLiteral(Tuple[Tuple[PropertyKeyName, Expression]]):

@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Optional, Sequence
+from typing import Optional, Sequence, Tuple
 
 from opencypher.ast import (
     Expression,
@@ -37,10 +37,10 @@ class CypherBuilder:
     return_factory: ReturnFactory = field(default_factory=ReturnFactory)
 
     def create(self, pattern_element: PatternElement) -> CypherWriteBuilder:
+        updating_clause = self.clause_factory.create(pattern_element)
+
         return CypherWriteBuilder.make(
-            NonEmptySequence[UpdatingClause](
-                self.clause_factory.create(pattern_element),
-            ),
+            NonEmptySequence[UpdatingClause](updating_clause),
             reading_clauses=self.reading_clauses,
             return_=None,
             clause_factory=self.clause_factory,
@@ -48,10 +48,10 @@ class CypherBuilder:
         )
 
     def delete(self, expression: str, *expressions: str, detach: bool = False) -> CypherWriteBuilder:
+        updating_clause = self.clause_factory.delete(expression, *expressions, detach=detach)
+
         return CypherWriteBuilder.make(
-            NonEmptySequence[UpdatingClause](
-                self.clause_factory.delete(expression, *expressions, detach=detach),
-            ),
+            NonEmptySequence[UpdatingClause](updating_clause),
             reading_clauses=self.reading_clauses,
             return_=None,
             clause_factory=self.clause_factory,
@@ -68,10 +68,21 @@ class CypherBuilder:
         )
 
     def merge(self, pattern_element: PatternElement) -> CypherWriteBuilder:
+        updating_clause = self.clause_factory.merge(pattern_element)
+
         return CypherWriteBuilder.make(
-            NonEmptySequence[UpdatingClause](
-                self.clause_factory.merge(pattern_element),
-            ),
+            NonEmptySequence[UpdatingClause](updating_clause),
+            reading_clauses=self.reading_clauses,
+            return_=None,
+            clause_factory=self.clause_factory,
+            return_factory=self.return_factory,
+        )
+
+    def remove(self, target: Tuple[str, str], *targets: Tuple[str, str]) -> CypherWriteBuilder:
+        updating_clause = self.clause_factory.remove(target, *targets)
+
+        return CypherWriteBuilder.make(
+            NonEmptySequence[UpdatingClause](updating_clause),
             reading_clauses=self.reading_clauses,
             return_=None,
             clause_factory=self.clause_factory,
@@ -79,10 +90,10 @@ class CypherBuilder:
         )
 
     def set(self, parameter: Parameter, *parameters: Parameter) -> CypherWriteBuilder:
+        updating_clause = self.clause_factory.set(parameter, *parameters)
+
         return CypherWriteBuilder.make(
-            NonEmptySequence[UpdatingClause](
-                self.clause_factory.set(parameter, *parameters),
-            ),
+            NonEmptySequence[UpdatingClause](updating_clause),
             reading_clauses=self.reading_clauses,
             return_=None,
             clause_factory=self.clause_factory,
