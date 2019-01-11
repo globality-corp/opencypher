@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import Optional, Sequence
 
 from opencypher.ast import (
+    Expression,
     NonEmptySequence,
     Order,
     Parameter,
@@ -11,6 +12,7 @@ from opencypher.ast import (
     ReturnItem,
     SinglePartReadQuery,
     UpdatingClause,
+    Variable,
 )
 from opencypher.builder.clause import ClauseFactory
 from opencypher.builder.return_ import ReturnFactory
@@ -26,7 +28,7 @@ class CypherBuilder:
     The transitions are:
 
         ( :create :delete :merge :set ) --> ( :CypherWriteBuilder )
-        ( :match )                      --> ( :CypherBuilder )
+        ( :match :unwind )              --> ( :CypherBuilder )
         ( :ret )                        --> ( :CypherUnionBuilder )
 
     """
@@ -106,4 +108,13 @@ class CypherBuilder:
                     ),
                 ),
             ),
+        )
+
+    def unwind(self, expression: Expression, variable: Variable) -> "CypherBuilder":
+        reading_clause = self.clause_factory.unwind(expression, variable)
+
+        return CypherBuilder(
+            reading_clauses=(*self.reading_clauses, reading_clause),
+            clause_factory=self.clause_factory,
+            return_factory=self.return_factory,
         )

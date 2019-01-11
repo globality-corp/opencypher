@@ -12,6 +12,7 @@ from opencypher.ast import (
     Set,
     SetItem,
     Variable,
+    Unwind,
 )
 from opencypher.builder import expr
 
@@ -76,4 +77,11 @@ class ClauseFactory:
                     for item in parameters
                 ),
             ),
+        )
+
+    @classmethod
+    def unwind(cls, expression: Expression, variable: Variable) -> Unwind:
+        return Unwind(
+            expression=expression,
+            variable=variable,
         )

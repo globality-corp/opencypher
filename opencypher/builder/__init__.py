@@ -1,4 +1,4 @@
-from opencypher.builder.expression import func, expr, parameters, properties
+from opencypher.builder.expression import func, expr, parameters, properties, var
 from opencypher.builder.cypher import CypherBuilder
 from opencypher.builder.pattern import node
 from opencypher.builder.return_ import asc, desc, order
@@ -14,6 +14,7 @@ match = cypher().match
 merge = cypher().merge
 ret = cypher().ret
 set = cypher().set
+unwind = cypher().unwind
 
 
 __all__ = [
@@ -32,4 +33,6 @@ __all__ = [
     "properties",
     "ret",
     "set",
+    "unwind",
+    "var",
 ]
