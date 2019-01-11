@@ -10,6 +10,7 @@ from opencypher.ast.match import Match
 from opencypher.ast.merge import Merge
 from opencypher.ast.return_ import Return
 from opencypher.ast.set import Set
+from opencypher.ast.unwind import Unwind
 
 
 """
@@ -21,7 +22,7 @@ ReadingClause = Match
 """
 ReadingClause = UNION[
     Match,
-    # omitted: Unwind
+    Unwind,
     # omitted: InQueryCall
 ]
 

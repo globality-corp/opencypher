@@ -10,6 +10,8 @@ from opencypher.builder import (
     parameters,
     ret,
     set,
+    unwind,
+    var,
 )
 
 
@@ -255,4 +257,28 @@ def test_set():
     assert_that(
         dict(ast),
         is_(equal_to(dict(foo="bar"))),
+    )
+
+
+def test_unwind():
+    ast = unwind(expr("foo"), var("bar")).ret("bar")
+    assert_that(
+        str(ast),
+        is_(equal_to("UNWIND foo AS bar RETURN bar")),
+    )
+    assert_that(
+        dict(ast),
+        is_(equal_to(dict())),
+    )
+
+
+def test_unwind_create():
+    ast = unwind(expr("foo"), var("bar")).create(node())
+    assert_that(
+        str(ast),
+        is_(equal_to("UNWIND foo AS bar CREATE ( )")),
+    )
+    assert_that(
+        dict(ast),
+        is_(equal_to(dict())),
     )

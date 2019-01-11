@@ -75,6 +75,9 @@ from opencypher.ast.set import (
     Set,
     SetItem,
 )
+from opencypher.ast.unwind import (
+    Unwind,
+)
 
 
 __all__ = [
@@ -125,6 +128,7 @@ __all__ = [
     "SymbolicName",
     "UpdatingClause",
     "Union",
+    "Unwind",
     "Variable",
     "Where",
 ]

@@ -78,3 +78,6 @@ def properties(parameters: Iterable[Parameter] = ()) -> Optional[MapLiteral]:
         return None
 
     return MapLiteral(items)
+
+
+var = Variable

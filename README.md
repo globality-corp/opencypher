@@ -67,7 +67,6 @@ Some compromises have been made with respect to the completeness of the AST:
  2. Several top level query clauses are not yet implemented, including:
 
      -  `REMOVE`
-     -  `UNWIND`
      -  `CALL`
      -  `WITH`
 
