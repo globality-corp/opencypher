@@ -13,9 +13,11 @@ from opencypher.ast import (
     PatternPart,
     SinglePartReadQuery,
     SinglePartWriteQuery,
+    RegularQuery,
     Return,
     ReturnBody,
     ReturnItem,
+    Union,
 )
 
 
@@ -40,23 +42,25 @@ MATCH = Match(
     ),
     (
         MATCH,
-        "MATCH ( ) RETURN foo",
+        "MATCH () RETURN foo",
         dict(),
     ),
 ])
 def test_read(reading_clause, query, parameters):
     ast = Cypher(
-        statement=SinglePartReadQuery(
-            return_=Return(
-                body=ReturnBody(
-                    items=NonEmptySequence[ReturnItem](
-                        Expression("foo"),
+        statement=RegularQuery(
+            query=SinglePartReadQuery(
+                return_=Return(
+                    body=ReturnBody(
+                        items=NonEmptySequence[ReturnItem](
+                            Expression("foo"),
+                        ),
                     ),
                 ),
+                reading_clauses=[
+                    reading_clause,
+                ] if reading_clause else [],
             ),
-            reading_clauses=[
-                reading_clause,
-            ] if reading_clause else [],
         ),
     )
     assert_that(
@@ -72,41 +76,94 @@ def test_read(reading_clause, query, parameters):
 @parameterized([
     (
         "foo", MATCH,
-        "MATCH ( ) MERGE ( ) RETURN foo",
+        "MATCH () MERGE () RETURN foo",
         dict(),
     ),
     (
         "foo", None,
-        "MERGE ( ) RETURN foo",
+        "MERGE () RETURN foo",
         dict(),
     ),
     (
         None, MATCH,
-        "MATCH ( ) MERGE ( )",
+        "MATCH () MERGE ()",
         dict(),
     ),
     (
         None, None,
-        "MERGE ( )",
+        "MERGE ()",
         dict(),
     ),
 ])
 def test_write(value, reading_clause, query, parameters):
     ast = Cypher(
-        statement=SinglePartWriteQuery(
+        statement=RegularQuery(
+            query=SinglePartWriteQuery(
+                return_=Return(
+                    body=ReturnBody(
+                        items=NonEmptySequence[ReturnItem](
+                            Expression(value),
+                        ),
+                    ),
+                ) if value else None,
+                reading_clauses=[
+                    reading_clause,
+                ] if reading_clause else [],
+                updating_clauses=[
+                    Merge(pattern_part=PatternPart()),
+                ],
+            ),
+        ),
+    )
+    assert_that(
+        str(ast),
+        is_(equal_to(query)),
+    )
+    assert_that(
+        dict(ast),
+        is_(equal_to(parameters)),
+    )
+
+
+@parameterized([
+    (
+        ["foo", "bar"],
+        False,
+        "RETURN foo UNION RETURN bar",
+        dict()
+    ),
+    (
+        ["foo", "bar", "baz"],
+        True,
+        "RETURN foo UNION ALL RETURN bar UNION ALL RETURN baz",
+        dict()
+    ),
+])
+def test_union(values, all, query, parameters):
+    queries = [
+        SinglePartReadQuery(
             return_=Return(
                 body=ReturnBody(
                     items=NonEmptySequence[ReturnItem](
                         Expression(value),
                     ),
                 ),
-            ) if value else None,
-            reading_clauses=[
-                reading_clause,
-            ] if reading_clause else [],
-            updating_clauses=[
-                Merge(pattern_part=PatternPart()),
-            ],
+            ),
+        )
+        for value in values
+    ]
+    ast = Cypher(
+        statement=RegularQuery(
+            query=queries[0],
+            items=NonEmptySequence[Union](
+                *(
+                    Union(
+                        query=query,
+                        all=all,
+                    )
+                    for query in queries[1:]
+                )
+            ),
         ),
     )
     assert_that(

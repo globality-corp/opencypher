@@ -14,22 +14,22 @@ from opencypher.ast import (
 @parameterized([
     (
         False, None,
-        "MATCH ( )",
+        "MATCH ()",
         dict(),
     ),
     (
         True, None,
-        "OPTIONAL MATCH ( )",
+        "OPTIONAL MATCH ()",
         dict(),
     ),
     (
         False, "foo",
-        "MATCH ( ) WHERE foo",
+        "MATCH () WHERE foo",
         dict(),
     ),
     (
         True, "foo",
-        "OPTIONAL MATCH ( ) WHERE foo",
+        "OPTIONAL MATCH () WHERE foo",
         dict(),
     ),
 ])

@@ -10,41 +10,6 @@ from opencypher.ast import (
 )
 
 
-def test_function_invocation():
-    ast = FunctionInvocation(
-        Expression("foo"),
-        expressions=NonEmptySequence[Expression](
-            "bar",
-        ),
-    )
-    assert_that(
-        str(ast),
-        is_(equal_to("foo( bar )")),
-    )
-    assert_that(
-        dict(ast),
-        is_(equal_to(dict())),
-    )
-
-
-def test_distinct_function_invocation():
-    ast = FunctionInvocation(
-        Expression("foo"),
-        expressions=NonEmptySequence[Expression](
-            "bar",
-        ),
-        distinct=True,
-    )
-    assert_that(
-        str(ast),
-        is_(equal_to("foo( DISTINCT bar )")),
-    )
-    assert_that(
-        dict(ast),
-        is_(equal_to(dict())),
-    )
-
-
 def test_expression():
     ast = Expression("foo")
     assert_that(
@@ -84,7 +49,7 @@ def test_expression_function_invocation():
     )
     assert_that(
         str(ast),
-        is_(equal_to("foo( bar )")),
+        is_(equal_to("foo(bar)")),
     )
     assert_that(
         dict(ast),

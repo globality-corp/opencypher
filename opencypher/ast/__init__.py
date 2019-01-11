@@ -4,20 +4,21 @@ from opencypher.ast.collection import (
 from opencypher.ast.create import (
     Create,
 )
+from opencypher.ast.clause import (
+    ReadingClause,
+    UpdatingClause,
+)
 from opencypher.ast.cypher import (
     Cypher,
-    ReadingClause,
-    SinglePartReadQuery,
-    SinglePartWriteQuery,
-    UpdatingClause,
 )
 from opencypher.ast.delete import (
     Delete,
 )
 from opencypher.ast.expression import (
     Expression,
+)
+from opencypher.ast.function import (
     FunctionInvocation,
-    Parameter,
 )
 from opencypher.ast.match import (
     Match,
@@ -55,13 +56,31 @@ from opencypher.ast.pattern import (
     PatternElementChain,
     PatternPart,
     NodePattern,
+    RangeLiteral,
     RelationshipDetail,
     RelationshipPattern,
     RelationshipPatternType,
 )
+from opencypher.ast.parameter import (
+    Parameter,
+)
 from opencypher.ast.properties import (
     MapLiteral,
+    PropertyExpression,
+    PropertyLookup,
     Properties,
+)
+from opencypher.ast.query import (
+    Query,
+    RegularQuery,
+    SinglePartReadQuery,
+    SinglePartWriteQuery,
+    Union,
+)
+from opencypher.ast.remove import (
+    Remove,
+    RemoveItem,
+    RemoveItems,
 )
 from opencypher.ast.return_ import (
     ExpressionAlias,
@@ -72,6 +91,13 @@ from opencypher.ast.return_ import (
 from opencypher.ast.set import (
     Set,
     SetItem,
+    SetItems,
+    SetPropertyItem,
+    SetVariableItem,
+    SetVariableNodeLabelsItem,
+)
+from opencypher.ast.unwind import (
+    Unwind,
 )
 
 
@@ -100,20 +126,32 @@ __all__ = [
     "PatternElement",
     "PatternElementChain",
     "PatternPart",
+    "PropertyExpression",
+    "PropertyLookup",
     "Properties",
     "PropertyKeyName",
+    "Query",
+    "RangeLiteral",
     "ReadingClause",
+    "RegularQuery",
     "RelationshipDetail",
     "RelationshipPattern",
     "RelationshipPatternType",
     "RelTypeName",
     "RelationshipTypes",
+    "Remove",
+    "RemoveItem",
+    "RemoveItems",
     "ReturnBody",
     "Return",
     "ReturnItem",
     "SchemaName",
     "Set",
     "SetItem",
+    "SetItems",
+    "SetPropertyItem",
+    "SetVariableItem",
+    "SetVariableNodeLabelsItem",
     "SinglePartReadQuery",
     "SinglePartWriteQuery",
     "Skip",
@@ -121,6 +159,8 @@ __all__ = [
     "SortOrder",
     "SymbolicName",
     "UpdatingClause",
+    "Union",
+    "Unwind",
     "Variable",
     "Where",
 ]

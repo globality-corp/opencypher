@@ -2,10 +2,11 @@ from dataclasses import dataclass
 from typing import Iterable, Optional, Union
 
 from opencypher.ast.collection import NonEmptySequence
-from opencypher.ast.expression import Expression, Parameter, Parameterized
+from opencypher.ast.expression import Expression
 from opencypher.ast.formatting import str_join
 from opencypher.ast.ordering import Order
 from opencypher.ast.paging import Limit, Skip
+from opencypher.ast.parameter import Parameter, Parameterized
 from opencypher.ast.naming import Variable
 
 

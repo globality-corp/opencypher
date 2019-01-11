@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Iterable
 
-from opencypher.ast.expression import Parameter, Parameterized
+from opencypher.ast.parameter import Parameter, Parameterized
 from opencypher.ast.pattern import Pattern
 
 

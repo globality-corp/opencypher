@@ -39,7 +39,7 @@ def test_count():
     ast = func.count(expr("foo"))
     assert_that(
         str(ast),
-        is_(equal_to("count( foo )")),
+        is_(equal_to("count(foo)")),
     )
     assert_that(
         dict(ast),
@@ -99,12 +99,18 @@ def test_parameters_name_prefix():
 
 
 def test_properties():
-    ast = properties(parameters(foo="bar"))
+    ast = properties(parameters(foo="bar", this="that"))
     assert_that(
         str(ast),
-        is_(equal_to("{ foo: $foo }")),
+        is_(equal_to("{foo: $foo, this: $this}")),
     )
-    # MapLiteral is not Parameterized
+    assert_that(
+        dict(ast),
+        is_(equal_to(dict(
+            foo="bar",
+            this="that",
+        ))),
+    )
 
 
 def test_properties_empty():

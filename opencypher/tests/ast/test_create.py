@@ -18,7 +18,7 @@ def test_create():
     )
     assert_that(
         str(ast),
-        is_(equal_to("CREATE ( )")),
+        is_(equal_to("CREATE ()")),
     )
     assert_that(
         dict(ast),

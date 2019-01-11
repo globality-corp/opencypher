@@ -2,8 +2,9 @@ from dataclasses import dataclass
 from typing import Iterable
 
 from opencypher.ast.collection import NonEmptySequence
-from opencypher.ast.expression import Expression, Parameter, Parameterized
+from opencypher.ast.expression import Expression
 from opencypher.ast.formatting import str_join
+from opencypher.ast.parameter import Parameter, Parameterized
 
 
 @dataclass(frozen=True)

@@ -21,25 +21,25 @@ class NodePattern(Parameterized):
         if self.variable is not None:
             if self.labels is not None:
                 if self.properties is not None:
-                    return f"( {str(self.variable)} {str_join(self.labels)} {str(self.properties)} )"
+                    return f"({str(self.variable)}{str_join(self.labels, '')} {str(self.properties)})"
                 else:
-                    return f"( {str(self.variable)} {str_join(self.labels)} )"
+                    return f"({str(self.variable)}{str_join(self.labels, '')})"
             else:
                 if self.properties is not None:
-                    return f"( {str(self.variable)} {str(self.properties)} )"
+                    return f"({str(self.variable)} {str(self.properties)})"
                 else:
-                    return f"( {str(self.variable)} )"
+                    return f"({str(self.variable)})"
         else:
             if self.labels is not None:
                 if self.properties is not None:
-                    return f"( {str_join(self.labels)} {str(self.properties)} )"
+                    return f"({str_join(self.labels, '')} {str(self.properties)})"
                 else:
-                    return f"( {str_join(self.labels)} )"
+                    return f"({str_join(self.labels, '')})"
             else:
                 if self.properties is not None:
-                    return f"( {str(self.properties)} )"
+                    return f"({str(self.properties)})"
                 else:
-                    return f"( )"
+                    return f"()"
 
     def iter_parameters(self) -> Iterable[Parameter]:
         if self.properties is not None:
