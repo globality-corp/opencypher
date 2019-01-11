@@ -40,9 +40,9 @@ and so forth.
     ).match(
         node("bob", "Person", {"name": "Bob"}),
     ).merge(
-        node("bob").rel_in(types="IsFriendsWith").node("alice"),
+        node("bob").rel_in(types="IS_FRIENDS_WITH").node("alice"),
     ).merge(
-        node("alice").rel_in(types="IsFriendsWith").node("bob"),
+        node("alice").rel_in(types="IS_FRIENDS_WITH").node("bob"),
     )
 
 The resulting `Cypher` query object integrates with -- but does not depend on -- the

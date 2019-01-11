@@ -38,12 +38,22 @@ class RelationshipDetail(Parameterized):
     properties: Optional[Properties] = None
 
     def __str__(self) -> str:
-        terms = [self.variable, self.types, self.length, self.properties]
-        funcs: Iterable[Callable[[Any], str]] = [str, lambda items: str_join(items, "|"), str, str]
+        if self.variable:
+            if self.types:
+                prefix = f"{str(self.variable)}{str_join(self.types, '|')}"
+            else:
+                prefix = str(self.variable)
+        else:
+            if self.types:
+                prefix = str_join(self.types, "|")
+            else:
+                prefix = None
+
+        terms = [prefix, self.length, self.properties]
 
         values = [
-            func(term)
-            for term, func in zip(terms, funcs)
+            str(term)
+            for term in terms
             if term is not None
         ]
 

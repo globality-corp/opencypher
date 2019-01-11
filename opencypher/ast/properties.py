@@ -17,7 +17,7 @@ class PropertyLookup:
     value: PropertyKeyName
 
     def __str__(self) -> str:
-        return f". {self.value}"
+        return f".{self.value}"
 
 
 @dataclass(frozen=True)
@@ -30,7 +30,7 @@ class PropertyExpression(Parameterized):
     properties: NonEmptySequence[PropertyLookup]
 
     def __str__(self) -> str:
-        return f"{self.value} {str_join(self.properties)}"
+        return f"{self.value}{str_join(self.properties, '')}"
 
     def iter_parameters(self) -> Iterable[Parameter]:
         if isinstance(self.value, Parameter):

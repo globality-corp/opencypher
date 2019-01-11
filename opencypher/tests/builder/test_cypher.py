@@ -241,12 +241,12 @@ def test_merge():
 @parameterized([
     (
         ("foo", "bar"),
-        "REMOVE foo . bar",
+        "REMOVE foo.bar",
         dict(),
     ),
     (
         ("foo", "bar.baz"),
-        "REMOVE foo . bar . baz",
+        "REMOVE foo.bar.baz",
         dict(),
     ),
     (

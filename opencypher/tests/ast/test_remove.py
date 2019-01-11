@@ -34,7 +34,7 @@ from opencypher.ast import (
                 PropertyLookup("bar"),
             ),
         ),
-        "REMOVE foo . bar",
+        "REMOVE foo.bar",
         dict(),
     ),
     (
@@ -45,7 +45,7 @@ from opencypher.ast import (
                 PropertyLookup("baz"),
             ),
         ),
-        "REMOVE $foo . bar . baz",
+        "REMOVE $foo.bar.baz",
         dict(foo="value"),
     ),
 ])
