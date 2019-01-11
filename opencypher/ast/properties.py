@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Iterable, Tuple, Union
+from typing import Iterable, Sequence, Tuple, Union
 
 from opencypher.ast.collection import NonEmptySequence
 from opencypher.ast.expression import Atom, Expression
@@ -43,7 +43,7 @@ class MapLiteral(Parameterized):
     MapLiteral = '{', [SP], [PropertyKeyName, [SP], ':', [SP], Expression, [SP], { ',', [SP], PropertyKeyName, [SP], ':', [SP], Expression, [SP] }], '}' ;  # noqa: E501
 
     """
-    items: Tuple[Tuple[PropertyKeyName, Expression], ...]
+    items: Sequence[Tuple[PropertyKeyName, Expression]]
 
     def __str__(self) -> str:
         items = (

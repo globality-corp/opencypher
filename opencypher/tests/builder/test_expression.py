@@ -39,7 +39,7 @@ def test_count():
     ast = func.count(expr("foo"))
     assert_that(
         str(ast),
-        is_(equal_to("count( foo )")),
+        is_(equal_to("count(foo)")),
     )
     assert_that(
         dict(ast),

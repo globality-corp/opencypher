@@ -16,21 +16,21 @@ from opencypher.ast import (
 @parameterized([
     (
         None,
-        "MERGE ( )",
+        "MERGE ()",
         dict(),
     ),
     (
         [
             MergeActionType.CREATE,
         ],
-        "MERGE ( ) ON CREATE SET foo = bar",
+        "MERGE () ON CREATE SET foo = bar",
         dict(),
     ),
     (
         [
             MergeActionType.MATCH,
         ],
-        "MERGE ( ) ON MATCH SET foo = bar",
+        "MERGE () ON MATCH SET foo = bar",
         dict(),
     ),
     (
@@ -38,7 +38,7 @@ from opencypher.ast import (
             MergeActionType.CREATE,
             MergeActionType.MATCH,
         ],
-        "MERGE ( ) ON CREATE SET foo = bar ON MATCH SET foo = bar",
+        "MERGE () ON CREATE SET foo = bar ON MATCH SET foo = bar",
         dict(),
     ),
 ])

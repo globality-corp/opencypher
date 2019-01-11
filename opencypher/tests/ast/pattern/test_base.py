@@ -6,6 +6,8 @@ from opencypher.ast import (
     PatternElement,
     PatternElementChain,
     PatternPart,
+    RelationshipPattern,
+    RelationshipDetail,
     Variable,
 )
 
@@ -23,7 +25,7 @@ def test_pattern():
     )
     assert_that(
         str(ast),
-        is_(equal_to("foo = ( )")),
+        is_(equal_to("foo = ()")),
     )
     assert_that(
         dict(ast),
@@ -39,6 +41,11 @@ def test_pattern_chain():
                     items=[
                         PatternElementChain(),
                         PatternElementChain(),
+                        PatternElementChain(
+                            relationship_pattern=RelationshipPattern(
+                                detail=RelationshipDetail(),
+                            )
+                        ),
                     ],
                 ),
             ),
@@ -46,7 +53,7 @@ def test_pattern_chain():
     )
     assert_that(
         str(ast),
-        is_(equal_to("( ) - [ ] - ( ) - [ ] - ( )")),
+        is_(equal_to("()--()--()-[]-()")),
     )
     assert_that(
         dict(ast),

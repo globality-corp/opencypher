@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum, unique
 from typing import Any, Callable, Iterable, Optional, Union
 
@@ -21,9 +21,9 @@ class RangeLiteral:
         if self.start is None:
             return "*"
         elif self.end is None:
-            return f"* {self.start}"
+            return f"*{self.start}"
         else:
-            return f"* {self.start} .. {self.end}"
+            return f"*{self.start}..{self.end}"
 
 
 @dataclass(frozen=True)
@@ -47,10 +47,7 @@ class RelationshipDetail(Parameterized):
             if term is not None
         ]
 
-        if values:
-            return f"[ {' '.join(values)} ]"
-        else:
-            return "[ ]"
+        return f"[{' '.join(values)}]"
 
     def iter_parameters(self) -> Iterable[Parameter]:
         if self.properties is not None:
@@ -139,10 +136,14 @@ class RelationshipPattern(Parameterized):
 
     """
     pattern_type: RelationshipPatternType = RelationshipPatternType.NONE
-    detail: RelationshipDetail = field(default_factory=RelationshipDetail)
+    detail: Optional[RelationshipDetail] = None
 
     def __str__(self) -> str:
-        return f"{self.pattern_type.left} {str(self.detail)} {self.pattern_type.right}"
+        if self.detail:
+            return f"{self.pattern_type.left}{str(self.detail)}{self.pattern_type.right}"
+        else:
+            return f"{self.pattern_type.left}{self.pattern_type.right}"
 
     def iter_parameters(self) -> Iterable[Parameter]:
-        yield from self.detail.iter_parameters()
+        if self.detail:
+            yield from self.detail.iter_parameters()

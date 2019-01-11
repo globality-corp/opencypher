@@ -27,7 +27,7 @@ The core API exposes a fluent builder interface for constructing queries and pat
         "pet",
     )
 
-    print(query)  #  MATCH ( person :Person ) - [ ] -> ( pet :Pet ) RETURN person, pet
+    print(query)  #  MATCH (person:Person)-[]->(pet :Pet) RETURN person, pet
 
 The builder supports chaining patterns and chaining clauses; queries may terminate on either
 a return statement (`.ret()`) or on any updating clause (e.g. `create()`, `delete()`, `merge()`,

@@ -16,6 +16,8 @@ from opencypher.ast.delete import (
 )
 from opencypher.ast.expression import (
     Expression,
+)
+from opencypher.ast.function import (
     FunctionInvocation,
 )
 from opencypher.ast.match import (
