@@ -130,13 +130,13 @@ def test_relationship_detail(variable, types, length, properties, query, paramet
     (
         RelationshipPatternType.IN,
         RelationshipDetail(),
-        "-[]->",
+        "<-[]-",
         dict(),
     ),
     (
         RelationshipPatternType.IN,
         None,
-        "-->",
+        "<--",
         dict(),
     ),
     (
@@ -154,13 +154,13 @@ def test_relationship_detail(variable, types, length, properties, query, paramet
     (
         RelationshipPatternType.OUT,
         RelationshipDetail(),
-        "<-[]-",
+        "-[]->",
         dict(),
     ),
     (
         RelationshipPatternType.OUT,
         None,
-        "<--",
+        "-->",
         dict(),
     ),
 ])

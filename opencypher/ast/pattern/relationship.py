@@ -123,9 +123,9 @@ class Arrow:
 @unique
 class RelationshipPatternType(Enum):
     BOTH = Arrow(ArrowHead.LeftArrowHead + ArrowHead.Dash, ArrowHead.Dash + ArrowHead.RightArrowHead)
-    IN = Arrow(ArrowHead.Dash, ArrowHead.Dash + ArrowHead.RightArrowHead)
+    IN = Arrow(ArrowHead.LeftArrowHead + ArrowHead.Dash, ArrowHead.Dash)
     NONE = Arrow(ArrowHead.Dash, ArrowHead.Dash)
-    OUT = Arrow(ArrowHead.LeftArrowHead + ArrowHead.Dash, ArrowHead.Dash)
+    OUT = Arrow(ArrowHead.Dash, ArrowHead.Dash + ArrowHead.RightArrowHead)
 
     @property
     def left(self) -> str:
