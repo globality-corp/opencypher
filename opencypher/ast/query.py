@@ -6,6 +6,7 @@ from opencypher.ast.collection import NonEmptySequence
 from opencypher.ast.formatting import str_join
 from opencypher.ast.parameter import Parameter, Parameterized
 from opencypher.ast.return_ import Return
+from opencypher.ast.with_ import With
 
 
 @dataclass(frozen=True)
@@ -61,6 +62,38 @@ class SinglePartWriteQuery(Parameterized):
                 yield from reading_clause.iter_parameters()
 
 
+@dataclass(frozen=True)
+class MultiPartQuery(Parameterized):
+    """
+    MultiPartQuery = { { ReadingClause, [SP] }, { UpdatingClause, [SP] }, With, [SP] }-, SinglePartQuery ;
+
+    """
+    updating_clauses: Sequence[UpdatingClause]
+    reading_clauses: Sequence[ReadingClause]
+    with_: With
+    single_part_query: "SinglePartQuery"
+
+    def __str__(self) -> str:
+        if self.reading_clauses:
+            if self.updating_clauses:
+                return f"{str_join(self.reading_clauses)} {str_join(self.updating_clauses)} {str(self.with_)} {str(self.single_part_query)}"  # noqa:E501
+            else:
+                return f"{str_join(self.reading_clauses)} {str(self.with_)} {str(self.single_part_query)}"
+        else:
+            if self.updating_clauses:
+                return f"{str_join(self.updating_clauses)} {str(self.with_)} {str(self.single_part_query)}"
+            else:
+                return f"{str(self.with_)} {str(self.single_part_query)}"
+
+    def iter_parameters(self) -> Iterable[Parameter]:
+        for reading_clause in self.reading_clauses:
+            yield from reading_clause.iter_parameters()
+        for updating_clause in self.updating_clauses:
+            yield from updating_clause.iter_parameters()
+        yield from self.with_.iter_parameters()
+        yield from self.single_part_query.iter_parameters()
+
+
 """
 SinglePartQuery = ({ ReadingClause, [SP] }, Return)
                 | ({ ReadingClause, [SP] }, UpdatingClause, { [SP], UpdatingClause }, [[SP], Return])
@@ -81,7 +114,7 @@ SingleQuery = SinglePartQuery
 """
 SingleQuery = Choice[
     SinglePartQuery,
-    # omitted: MultiPartQuery
+    MultiPartQuery,
 ]
 
 

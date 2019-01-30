@@ -99,6 +99,9 @@ from opencypher.ast.set import (
 from opencypher.ast.unwind import (
     Unwind,
 )
+from opencypher.ast.with_ import (
+    With,
+)
 
 
 __all__ = [
@@ -163,4 +166,5 @@ __all__ = [
     "Unwind",
     "Variable",
     "Where",
+    "With",
 ]
