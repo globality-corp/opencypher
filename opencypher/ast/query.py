@@ -98,8 +98,8 @@ class MultiPartQuery(Parameterized):
     MultiPartQuery = { { ReadingClause, [SP] }, { UpdatingClause, [SP] }, With, [SP] }-, SinglePartQuery ;
 
     """
-    single_part_query: "SinglePartQuery"
     with_sub_querys: NonEmptySequence[WithSubQuery]
+    single_part_query: "SinglePartQuery"
 
     def __str__(self) -> str:
         return f"{str(self.with_sub_querys)} {str(self.single_part_query)}"
