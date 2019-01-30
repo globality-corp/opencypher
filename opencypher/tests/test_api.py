@@ -49,7 +49,7 @@ def test_api():
     assert_that(
         str(ast),
         is_(equal_to(
-            "MATCH (foo:FOO {bar: $foo_bar})-[:Bar]->(baz:BAZ {bar: $baz_bar}) "
+            "MATCH (foo:FOO {bar: $foo_bar})<-[:Bar]-(baz:BAZ {bar: $baz_bar}) "
             "DELETE foo, baz "
             "RETURN foo, baz ORDER BY foo ASCENDING, bar ASCENDING",
         )),
@@ -73,7 +73,7 @@ def test_readme_query():
     assert_that(
         str(query),
         is_(equal_to(
-            "MATCH (person:Person)-[]->(pet:Pet) RETURN person, pet",
+            "MATCH (person:Person)<-[]-(pet:Pet) RETURN person, pet",
         )),
     )
 
@@ -94,8 +94,8 @@ def test_readme_update():
         is_(equal_to(
             "MATCH (alice:Person {name: $alice_name}) "
             "MATCH (bob:Person {name: $bob_name}) "
-            "MERGE (bob)-[:IS_FRIENDS_WITH]->(alice) "
-            "MERGE (alice)-[:IS_FRIENDS_WITH]->(bob)"
+            "MERGE (bob)<-[:IS_FRIENDS_WITH]-(alice) "
+            "MERGE (alice)<-[:IS_FRIENDS_WITH]-(bob)"
         )),
     )
     assert_that(

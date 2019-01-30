@@ -57,7 +57,7 @@ def test_rel_in():
 
     assert_that(
         str(ast),
-        is_(equal_to("()-[]->()")),
+        is_(equal_to("()<-[]-()")),
     )
     assert_that(
         dict(ast),
@@ -70,7 +70,7 @@ def test_rel_out():
 
     assert_that(
         str(ast),
-        is_(equal_to("()<-[]-()")),
+        is_(equal_to("()-[]->()")),
     )
     assert_that(
         dict(ast),
