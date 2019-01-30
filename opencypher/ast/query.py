@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Iterable, Optional, Sequence, Union as Choice
 
 from opencypher.ast.clause import ReadingClause, UpdatingClause
@@ -63,27 +63,26 @@ class SinglePartWriteQuery(Parameterized):
 
 
 @dataclass(frozen=True)
-class MultiPartQuery(Parameterized):
+class WithSubQuery(Parameterized):
     """
-    MultiPartQuery = { { ReadingClause, [SP] }, { UpdatingClause, [SP] }, With, [SP] }-, SinglePartQuery ;
+    MultiPartQuery = { { ReadingClause, [SP] }, { UpdatingClause, [SP] }, With, [SP] }
 
     """
-    updating_clauses: Sequence[UpdatingClause]
-    reading_clauses: Sequence[ReadingClause]
     with_: With
-    single_part_query: "SinglePartQuery"
+    updating_clauses: Sequence[UpdatingClause] = field(default_factory=list)
+    reading_clauses: Sequence[ReadingClause] = field(default_factory=list)
 
     def __str__(self) -> str:
         if self.reading_clauses:
             if self.updating_clauses:
-                return f"{str_join(self.reading_clauses)} {str_join(self.updating_clauses)} {str(self.with_)} {str(self.single_part_query)}"  # noqa:E501
+                return f"{str_join(self.reading_clauses)} {str_join(self.updating_clauses)} {str(self.with_)}"  # noqa:E501
             else:
-                return f"{str_join(self.reading_clauses)} {str(self.with_)} {str(self.single_part_query)}"
+                return f"{str_join(self.reading_clauses)} {str(self.with_)}"
         else:
             if self.updating_clauses:
-                return f"{str_join(self.updating_clauses)} {str(self.with_)} {str(self.single_part_query)}"
+                return f"{str_join(self.updating_clauses)} {str(self.with_)}"
             else:
-                return f"{str(self.with_)} {str(self.single_part_query)}"
+                return f"{str(self.with_)}"
 
     def iter_parameters(self) -> Iterable[Parameter]:
         for reading_clause in self.reading_clauses:
@@ -91,6 +90,23 @@ class MultiPartQuery(Parameterized):
         for updating_clause in self.updating_clauses:
             yield from updating_clause.iter_parameters()
         yield from self.with_.iter_parameters()
+
+
+@dataclass(frozen=True)
+class MultiPartQuery(Parameterized):
+    """
+    MultiPartQuery = { { ReadingClause, [SP] }, { UpdatingClause, [SP] }, With, [SP] }-, SinglePartQuery ;
+
+    """
+    single_part_query: "SinglePartQuery"
+    with_sub_querys: NonEmptySequence[WithSubQuery]
+
+    def __str__(self) -> str:
+        return f"{str(self.with_sub_querys)} {str(self.single_part_query)}"
+
+    def iter_parameters(self) -> Iterable[Parameter]:
+        for with_sub_query in self.with_sub_querys:
+            yield from with_sub_query.iter_parameters()
         yield from self.single_part_query.iter_parameters()
 
 
